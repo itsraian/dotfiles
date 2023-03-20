@@ -1,0 +1,33 @@
+{
+  "coc.preferences.formatOnSave": true,
+  "suggest.autoTrigger": "trigger",
+  "suggest.maxCompleteItemCount": 10,
+  "suggest.completionItemKindLabels": {
+    "text": "text",
+    "method": "func",
+    "function": "func",
+    "constructor": "func",
+    "field": "prop",
+    "variable": "var"
+  },
+  "codeLens.enable": true,
+  "colors.enable": true,
+  "diagnostic.virtualText": true,
+  "diagnostic.virtualTextCurrentLineOnly": false,
+  "typescript.referencesCodeLens.enabled": false,
+  "typescript.implementationsCodeLens.enabled": false,
+  "typescript.inlayHints.parameterNames.enabled": "literals",
+  "typescript.inlayHints.parameterTypes.enabled": false,
+  "typescript.inlayHints.variableTypes.enabled": false,
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": false,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": false,
+  "typescript.inlayHints.enumMemberValues.enabled": true,
+  "tsserver.experimental.enableProjectDiagnostics": true,
+  "languageserver": {
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": ["go.mod"],
+      "filetypes": ["go"]
+    }
+  }
+}
