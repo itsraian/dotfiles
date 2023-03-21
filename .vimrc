@@ -38,6 +38,11 @@ Plug 'tpope/vim-fugitive'
 
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
+Plug 'ryanoasis/vim-devicons'
+Plug 'Yggdroot/indentLine'
+
+"Plug 'jiangmiao/auto-pairs'
+
 call plug#end()
 
 colorscheme dracula
@@ -117,9 +122,9 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go inorem
 "let g:ale_sign_column_always=1
 "let g:ale_fix_on_save=1
 "let g:ale_fixers = {
-"			\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-"			\   'javascript': ['prettier','eslint'],
-"			\   'typescript': ['prettier','eslint'],
-"			\   'javascriptreact': ['prettier','eslint'],
-"			\   'typescriptreact': ['prettier','eslint'],
-"			\}
+"                       \   '*': ['remove_trailing_lines', 'trim_whitespace'],
+"                       \   'javascript': ['prettier','eslint'],
+"                       \   'typescript': ['prettier','eslint'],
+"                       \   'javascriptreact': ['prettier','eslint'],
+"                       \   'typescriptreact': ['prettier','eslint'],
+"                       \}
