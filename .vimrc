@@ -11,6 +11,11 @@ set autoindent
 set smartindent
 set nocompatible
 set completeopt+=longest
+set scrolloff=999
+set cursorline
+set foldmethod=syntax
+set foldlevelstart=99
+set termguicolors
 filetype plugin on
 filetype indent on
 
@@ -25,7 +30,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'dense-analysis/ale'
 
-Plug 'dracula/vim', { 'as': 'dracula' }
+" Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'arcticicestudio/nord-vim'
 
 Plug 'preservim/nerdtree'
 
@@ -45,7 +51,7 @@ Plug 'Yggdroot/indentLine'
 
 call plug#end()
 
-colorscheme dracula
+colorscheme nord
 
 nmap <Tab> >>
 nmap <S-Tab> <<
@@ -70,14 +76,42 @@ nnoremap <leader>b :NERDTreeClose<CR>
 "let g:go_fmt_autosave=1
 "let g:go_metalinter_autosave=1
 "let g:go_highlight_functions=1
+let g:go_highlight_array_whitespace_error=1
+let g:go_highlight_chan_whitespace_error=1
+let g:go_highlight_extra_types=1
+let g:go_highlight_space_tab_error=1
+let g:go_highlight_trailing_whitespace_error=1
+let g:go_highlight_operators=1
+let g:go_highlight_functions=1
+let g:go_highlight_function_parameters=1
+let g:go_highlight_function_calls=1
+let g:go_highlight_fields=1
+let g:go_highlight_types=1
+let g:go_highlight_build_constraints=1
+let g:go_highlight_string_spellcheck=1
+let g:go_highlight_format_strings=1
+let g:go_highlight_generate_tags=1
+let g:go_highlight_variable_assignments=0
+let g:go_highlight_variable_declarations=0
+
 
 "autocmd FileType go nmap <silent> gd <Plug>(go-def)
 "autocmd FileType go nmap <silent> gy <Plug>(go-def-type)
 "autocmd FileType go nmap <silent> gi <Plug>(go-implements)
 
+
+""" ==============
+""" Airline
+""" ==============
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'jsformatter'
+let g:airline_powerline_fonts = 1
+
 """ ===========
 """ FZF
 """ ===========
+let g:fzf_action = {'enter': 'tab split'}
 nnoremap <C-p> :Files<CR>
 nnoremap <C-f> :Rg<CR>
 
@@ -104,7 +138,7 @@ autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go :call CocAction('runCommand', 'ed
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+                        \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 """ ==================
 """ ALE Configuration
