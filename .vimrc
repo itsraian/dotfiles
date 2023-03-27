@@ -31,7 +31,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'dense-analysis/ale'
 
 " Plug 'dracula/vim', { 'as': 'dracula' }
-Plug 'arcticicestudio/nord-vim'
+" Plug 'arcticicestudio/nord-vim'
+Plug 'morhetz/gruvbox'
 
 Plug 'preservim/nerdtree'
 
@@ -51,7 +52,7 @@ Plug 'Yggdroot/indentLine'
 
 call plug#end()
 
-colorscheme nord
+colorscheme gruvbox
 
 nmap <Tab> >>
 nmap <S-Tab> <<
