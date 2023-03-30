@@ -1,7 +1,7 @@
 {
   "coc.preferences.formatOnSave": true,
   "suggest.autoTrigger": "trigger",
-  "suggest.maxCompleteItemCount": 10,
+  "suggest.maxCompleteItemCount": 25,
   "suggest.completionItemKindLabels": {
     "text": "text",
     "method": "func",
@@ -27,7 +27,15 @@
     "golang": {
       "command": "gopls",
       "rootPatterns": ["go.mod"],
-      "filetypes": ["go"]
+      "filetypes": ["go"],
+      "initializationOptions": {
+        "usePlaceholders": true,
+        "staticcheck": true,
+        "hints": {
+          "compositeLiteralFields": true,
+          "compositeLiteralTypes": true
+        }
+      }
     }
   }
 }
