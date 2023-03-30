@@ -30,9 +30,9 @@ Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'dense-analysis/ale'
 
-" Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'dracula/vim', { 'as': 'dracula' }
 " Plug 'arcticicestudio/nord-vim'
-Plug 'morhetz/gruvbox'
+" Plug 'morhetz/gruvbox'
 
 Plug 'preservim/nerdtree'
 
@@ -52,7 +52,7 @@ Plug 'Yggdroot/indentLine'
 
 call plug#end()
 
-colorscheme gruvbox
+colorscheme dracula
 
 nmap <Tab> >>
 nmap <S-Tab> <<
