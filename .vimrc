@@ -30,9 +30,10 @@ Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'dense-analysis/ale'
 
-Plug 'dracula/vim', { 'as': 'dracula' }
+" Plug 'dracula/vim', { 'as': 'dracula' }
 " Plug 'arcticicestudio/nord-vim'
 " Plug 'morhetz/gruvbox'
+Plug 'sainnhe/sonokai'
 
 Plug 'preservim/nerdtree'
 
@@ -43,7 +44,7 @@ Plug 'vim-airline/vim-airline-themes'
 
 Plug 'tpope/vim-fugitive'
 
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+" Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 Plug 'ryanoasis/vim-devicons'
 Plug 'Yggdroot/indentLine'
@@ -52,7 +53,7 @@ Plug 'Yggdroot/indentLine'
 
 call plug#end()
 
-colorscheme dracula
+colorscheme sonokai
 
 nmap <Tab> >>
 nmap <S-Tab> <<
@@ -68,15 +69,13 @@ let NERDTreeDirArrows=1
 let NERDTreeMinimalUI=1
 let NERDTreeShowHidden=1
 nnoremap <C-b> :NERDTreeFind<CR>
-nnoremap <leader>b :NERDTreeClose<CR>
+nnoremap <leader>b :NERDTreeToggle<CR>
 
 """ ===============
 """ vim-go
 """ ===============
-"let g:go_fmt_autosave=1
-"let g:go_fmt_autosave=1
-"let g:go_metalinter_autosave=1
-"let g:go_highlight_functions=1
+let g:go_fmt_autosave=1
+let g:go_metalinter_autosave=1
 let g:go_highlight_array_whitespace_error=1
 let g:go_highlight_chan_whitespace_error=1
 let g:go_highlight_extra_types=1
@@ -90,8 +89,8 @@ let g:go_highlight_fields=1
 let g:go_highlight_types=1
 let g:go_highlight_build_constraints=1
 let g:go_highlight_string_spellcheck=1
-let g:go_highlight_format_strings=1
-let g:go_highlight_generate_tags=1
+let g:go_highlight_format_strings=0
+let g:go_highlight_generate_tags=0
 let g:go_highlight_variable_assignments=0
 let g:go_highlight_variable_declarations=0
 
@@ -112,8 +111,9 @@ let g:airline_powerline_fonts = 1
 """ ===========
 """ FZF
 """ ===========
-let g:fzf_action = {'enter': 'tab split'}
+" let g:fzf_action = {'enter': 'tab split'}
 nnoremap <C-p> :Files<CR>
+nnoremap <C-g> :Buffers<CR>
 nnoremap <C-f> :Rg<CR>
 
 """ =========================
@@ -140,6 +140,8 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
                         \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+nmap <C-m> <Plug>(coc-codeaction)
 
 """ ==================
 """ ALE Configuration
