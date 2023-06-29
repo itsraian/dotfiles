@@ -1,7 +1,7 @@
 {
   "coc.preferences.formatOnSave": true,
   "suggest.autoTrigger": "trigger",
-  "suggest.maxCompleteItemCount": 25,
+  "suggest.maxCompleteItemCount": 50,
   "suggest.completionItemKindLabels": {
     "text": "text",
     "method": "func",
@@ -23,6 +23,8 @@
   "typescript.inlayHints.functionLikeReturnTypes.enabled": false,
   "typescript.inlayHints.enumMemberValues.enabled": true,
   "tsserver.experimental.enableProjectDiagnostics": true,
+  "eslint.trace.server": "verbose",
+  "eslint.packageManager": "pnpm",
   "languageserver": {
     "golang": {
       "command": "gopls",
@@ -30,11 +32,7 @@
       "filetypes": ["go"],
       "initializationOptions": {
         "usePlaceholders": true,
-        "staticcheck": true,
-        "hints": {
-          "compositeLiteralFields": true,
-          "compositeLiteralTypes": true
-        }
+        "staticcheck": true
       }
     }
   }

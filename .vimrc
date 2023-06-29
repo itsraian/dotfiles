@@ -16,6 +16,7 @@ set cursorline
 set foldmethod=syntax
 set foldlevelstart=99
 set termguicolors
+set re=0
 filetype plugin on
 filetype indent on
 
@@ -30,10 +31,10 @@ Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'dense-analysis/ale'
 
-" Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'dracula/vim', { 'as': 'dracula' }
 " Plug 'arcticicestudio/nord-vim'
 " Plug 'morhetz/gruvbox'
-Plug 'sainnhe/sonokai'
+" Plug 'sainnhe/sonokai'
 
 Plug 'preservim/nerdtree'
 
@@ -53,7 +54,7 @@ Plug 'Yggdroot/indentLine'
 
 call plug#end()
 
-colorscheme sonokai
+colorscheme dracula
 
 nmap <Tab> >>
 nmap <S-Tab> <<
@@ -68,8 +69,8 @@ let NERDTreeQuitOnOpen=1
 let NERDTreeDirArrows=1
 let NERDTreeMinimalUI=1
 let NERDTreeShowHidden=1
-nnoremap <C-b> :NERDTreeFind<CR>
-nnoremap <leader>b :NERDTreeToggle<CR>
+nnoremap <leader>b :NERDTreeFind<CR>
+nnoremap <leader>v :NERDTreeToggle<CR>
 
 """ ===============
 """ vim-go
@@ -121,6 +122,7 @@ nnoremap <C-f> :Rg<CR>
 """ =========================
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nnoremap <C-l> :CocList diagnostics<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nnoremap <leader>l :copen<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nnoremap <silent> K :call CocActionAsync('doHover')<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go inoremap <silent> <leader>p :CocActionSync('showSignatureHelp')<CR>
 
@@ -139,9 +141,10 @@ autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go :call CocAction('runCommand', 'ed
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                        \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+			\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-nmap <C-m> <Plug>(coc-codeaction)
+nmap <leader>m <Plug>(coc-codeaction-line)
+" nmap <leader>m <Plug>(coc-codeaction)
 
 """ ==================
 """ ALE Configuration
@@ -159,9 +162,9 @@ nmap <C-m> <Plug>(coc-codeaction)
 "let g:ale_sign_column_always=1
 "let g:ale_fix_on_save=1
 "let g:ale_fixers = {
-"                       \   '*': ['remove_trailing_lines', 'trim_whitespace'],
-"                       \   'javascript': ['prettier','eslint'],
-"                       \   'typescript': ['prettier','eslint'],
-"                       \   'javascriptreact': ['prettier','eslint'],
-"                       \   'typescriptreact': ['prettier','eslint'],
-"                       \}
+"			\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+"			\   'javascript': ['prettier','eslint'],
+"			\   'typescript': ['prettier','eslint'],
+"			\   'javascriptreact': ['prettier','eslint'],
+"			\   'typescriptreact': ['prettier','eslint'],
+"			\}
