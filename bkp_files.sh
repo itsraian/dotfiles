@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /Users/raian/.raian/dotfiles
+
 cp ~/.tmux.conf .
 cp ~/.vimrc .
 cp ~/.vim/coc-settings.json .
