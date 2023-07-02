@@ -17,8 +17,13 @@ set foldmethod=syntax
 set foldlevelstart=99
 set termguicolors
 set re=0
+
+let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
+
 filetype plugin on
 filetype indent on
+syntax enable
 
 call plug#begin()
 
@@ -54,6 +59,7 @@ Plug 'Yggdroot/indentLine'
 
 call plug#end()
 
+" let g:dracula_italic = 0
 colorscheme dracula
 
 nmap <Tab> >>
@@ -144,27 +150,3 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go inorem
 			\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 nmap <leader>m <Plug>(coc-codeaction-line)
-" nmap <leader>m <Plug>(coc-codeaction)
-
-""" ==================
-""" ALE Configuration
-""" ==================
-
-"autocmd FileType javascript,typescript,javascriptreact,typescriptreact set omnifunc=ale#completion#OmniFunc
-"autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> K :ALEHover<CR>
-"autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> gd :ALEGoToDefinition<CR>
-"autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> gy :ALEGoToTypeDefinition<CR>
-"autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> gi :ALEGoToImplementation<CR>
-"autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> gr :ALEFindReferences
-"autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> <C-/> :ALEImport<CR>
-"
-"let g:ale_floating_preview=1
-"let g:ale_sign_column_always=1
-"let g:ale_fix_on_save=1
-"let g:ale_fixers = {
-"			\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-"			\   'javascript': ['prettier','eslint'],
-"			\   'typescript': ['prettier','eslint'],
-"			\   'javascriptreact': ['prettier','eslint'],
-"			\   'typescriptreact': ['prettier','eslint'],
-"			\}

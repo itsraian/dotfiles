@@ -1,0 +1,22 @@
+rename-session tudoconta
+
+rename-window runs
+send "cd ~/workspaces/tudoconta/tudoconta-api/" C-m
+send "go run *.go" C-m
+
+split-window -h
+send "cd ~/workspaces/tudoconta/tudoconta-web/" C-m
+send "pnpm dev" C-m
+
+new-window -n go
+send "cd ~/workspaces/tudoconta/tudoconta-api/" C-m
+send "vim main.go" C-m
+
+new-window -n js
+send "cd ~/workspaces/tudoconta/tudoconta-web/" C-m
+send "vim src/pages/login/LoginPage.tsx" C-m
+
+new-window -n terminal
+send "cd ~/workspaces/tudoconta" C-m
+
+select-window -t 0
