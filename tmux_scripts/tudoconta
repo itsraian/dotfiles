@@ -2,9 +2,10 @@ rename-session tudoconta
 
 rename-window runs
 send "cd ~/workspaces/tudoconta/tudoconta-api/" C-m
+send "source .env" C-m
 send "go run *.go" C-m
 
-split-window -h
+split-window -v
 send "cd ~/workspaces/tudoconta/tudoconta-web/" C-m
 send "pnpm dev" C-m
 

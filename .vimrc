@@ -36,10 +36,10 @@ Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'dense-analysis/ale'
 
-Plug 'dracula/vim', { 'as': 'dracula' }
+" Plug 'dracula/vim', { 'as': 'dracula' }
 " Plug 'arcticicestudio/nord-vim'
 " Plug 'morhetz/gruvbox'
-" Plug 'sainnhe/sonokai'
+Plug 'sainnhe/sonokai'
 
 Plug 'preservim/nerdtree'
 
@@ -60,7 +60,10 @@ Plug 'Yggdroot/indentLine'
 call plug#end()
 
 " let g:dracula_italic = 0
-colorscheme dracula
+let g:airline_theme = 'sonokai'
+let g:sonokai_enable_italic = 1
+let g:sonokai_style = 'espresso'
+colorscheme sonokai
 
 nmap <Tab> >>
 nmap <S-Tab> <<
