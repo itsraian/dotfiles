@@ -34,6 +34,10 @@
         "usePlaceholders": true,
         "staticcheck": true
       }
+    },
+    "zig": {
+      "command": "zls",
+      "filetypes": ["zig"]
     }
   }
 }

@@ -130,26 +130,26 @@ nnoremap <C-f> :Rg<CR>
 """ COC
 """ =========================
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nnoremap <C-l> :CocList diagnostics<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nnoremap <leader>l :copen<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nnoremap <silent> K :call CocActionAsync('doHover')<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go inoremap <silent> <leader>p :CocActionSync('showSignatureHelp')<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig nnoremap <C-l> :CocList diagnostics<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig nnoremap <leader>l :copen<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig nnoremap <silent> K :call CocActionAsync('doHover')<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig inoremap <silent> <leader>p :CocActionSync('showSignatureHelp')<CR>
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> gd <Plug>(coc-definition)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> gy <Plug>(coc-type-definition)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> gi <Plug>(coc-implementation)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> gr <Plug>(coc-references)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> [g <Plug>(coc-diagnostic-prev)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> ]g <Plug>(coc-diagnostic-next)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig nmap <silent> gd <Plug>(coc-definition)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig nmap <silent> gy <Plug>(coc-type-definition)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig nmap <silent> gi <Plug>(coc-implementation)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig nmap <silent> gr <Plug>(coc-references)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig nmap <silent> [g <Plug>(coc-diagnostic-prev)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go imap <silent><expr> <c-space> coc#refresh()
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig imap <silent><expr> <c-space> coc#refresh()
 
 autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go :call CocAction('runCommand', 'editor.action.organizeImport')
-autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go :call CocAction('runCommand', 'editor.action.formatDocument')
+autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go,*.zig :call CocAction('runCommand', 'editor.action.formatDocument')
 
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
 			\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 nmap <leader>m <Plug>(coc-codeaction-line)
