@@ -35,6 +35,11 @@
         "staticcheck": true
       }
     },
+    "rust": {
+      "command": "rust-analyzer",
+      "filetypes": ["rust"],
+      "rootPatterns": ["Cargo.toml"]
+    },
     "zig": {
       "command": "zls",
       "filetypes": ["zig"]
