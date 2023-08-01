@@ -33,6 +33,8 @@ Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
+Plug 'puremourning/vimspector'
+
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'dense-analysis/ale'
 
