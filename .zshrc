@@ -126,3 +126,6 @@ case ":$PATH:" in
 esac
 # pnpm end
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
+alias python=python3
+alias vim=/opt/homebrew/Cellar/vim/9.0.1650/bin/vim

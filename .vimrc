@@ -40,8 +40,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Plug 'dracula/vim', { 'as': 'dracula' }
 " Plug 'arcticicestudio/nord-vim'
-" Plug 'morhetz/gruvbox'
-Plug 'sainnhe/sonokai'
+Plug 'morhetz/gruvbox'
+" Plug 'sainnhe/sonokai'
 
 Plug 'preservim/nerdtree'
 
@@ -62,10 +62,10 @@ Plug 'Yggdroot/indentLine'
 call plug#end()
 
 " let g:dracula_italic = 0
-let g:airline_theme = 'sonokai'
-let g:sonokai_enable_italic = 1
-let g:sonokai_style = 'espresso'
-colorscheme sonokai
+let g:airline_theme = 'gruvbox'
+" let g:sonokai_enable_italic = 1
+" let g:sonokai_style = 'espresso'
+colorscheme gruvbox
 
 nmap <Tab> >>
 nmap <S-Tab> <<
@@ -80,6 +80,7 @@ let NERDTreeQuitOnOpen=1
 let NERDTreeDirArrows=1
 let NERDTreeMinimalUI=1
 let NERDTreeShowHidden=1
+let NERDTreeWinSize=40
 nnoremap <leader>b :NERDTreeFind<CR>
 nnoremap <leader>v :NERDTreeToggle<CR>
 
@@ -146,7 +147,7 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,ru
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-space> coc#refresh()
 
-autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx :call CocAction('runCommand', 'editor.action.organizeImport')
+autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go :call CocAction('runCommand', 'editor.action.organizeImport')
 autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go,*.zig,*.rs :call CocAction('runCommand', 'editor.action.formatDocument')
 
 autocmd CursorHold * silent call CocActionAsync('highlight')
