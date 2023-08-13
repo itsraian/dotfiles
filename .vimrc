@@ -149,6 +149,7 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,ru
 
 autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go :call CocAction('runCommand', 'editor.action.organizeImport')
 autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go,*.zig,*.rs :call CocAction('runCommand', 'editor.action.formatDocument')
+nnoremap & :call CocAction('runCommand', 'document.toggleInlayHint')<CR>
 
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
