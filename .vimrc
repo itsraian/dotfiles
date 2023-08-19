@@ -57,6 +57,8 @@ Plug 'tpope/vim-fugitive'
 Plug 'ryanoasis/vim-devicons'
 Plug 'Yggdroot/indentLine'
 
+Plug 'github/copilot.vim'
+
 "Plug 'jiangmiao/auto-pairs'
 
 call plug#end()
