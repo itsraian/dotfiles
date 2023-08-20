@@ -13,7 +13,7 @@
   "codeLens.enable": true,
   "colors.enable": true,
   "diagnostic.virtualText": true,
-  "diagnostic.virtualTextCurrentLineOnly": false,
+  "diagnostic.virtualTextCurrentLineOnly": true,
   "typescript.referencesCodeLens.enabled": false,
   "typescript.implementationsCodeLens.enabled": false,
   "typescript.inlayHints.parameterNames.enabled": "literals",
