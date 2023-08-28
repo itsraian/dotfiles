@@ -40,8 +40,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Plug 'dracula/vim', { 'as': 'dracula' }
 " Plug 'arcticicestudio/nord-vim'
-Plug 'morhetz/gruvbox'
-" Plug 'sainnhe/sonokai'
+" Plug 'morhetz/gruvbox'
+Plug 'sainnhe/sonokai'
 
 Plug 'preservim/nerdtree'
 
@@ -64,13 +64,10 @@ Plug 'github/copilot.vim'
 call plug#end()
 
 " let g:dracula_italic = 0
-let g:airline_theme = 'gruvbox'
-" let g:sonokai_enable_italic = 1
-" let g:sonokai_style = 'espresso'
-colorscheme gruvbox
-
-nmap <Tab> >>
-nmap <S-Tab> <<
+" let g:airline_theme = 'gruvbox'
+let g:sonokai_enable_italic = 1
+let g:sonokai_style = 'espresso'
+colorscheme sonokai
 
 inoremap <C-Space> <C-x><C-o>
 imap <C-@> <C-Space>
