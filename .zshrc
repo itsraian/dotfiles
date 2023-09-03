@@ -129,4 +129,4 @@ esac
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 alias python=python3
-alias vim=/opt/homebrew/Cellar/vim/9.0.1750/bin/vim
+alias vim=/opt/homebrew/Cellar/vim/9.0.1850/bin/vim
