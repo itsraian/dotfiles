@@ -69,19 +69,17 @@ let g:sonokai_enable_italic = 1
 let g:sonokai_style = 'espresso'
 colorscheme sonokai
 
-inoremap <C-Space> <C-x><C-o>
-imap <C-@> <C-Space>
 
 """ ===============
 """ NERDTree
 """ ===============
-let NERDTreeQuitOnOpen=1
-let NERDTreeDirArrows=1
-let NERDTreeMinimalUI=1
-let NERDTreeShowHidden=1
-let NERDTreeWinSize=40
-nnoremap <leader>b :NERDTreeFind<CR>
-nnoremap <leader>v :NERDTreeToggle<CR>
+" let NERDTreeQuitOnOpen=1
+" let NERDTreeDirArrows=1
+" let NERDTreeMinimalUI=1
+" let NERDTreeShowHidden=1
+" let NERDTreeWinSize=40
+" nnoremap <leader>b :NERDTreeFind<CR>
+" nnoremap <leader>v :NERDTreeToggle<CR>
 
 """ ===============
 """ vim-go
@@ -107,11 +105,6 @@ let g:go_highlight_variable_assignments=0
 let g:go_highlight_variable_declarations=0
 
 
-"autocmd FileType go nmap <silent> gd <Plug>(go-def)
-"autocmd FileType go nmap <silent> gy <Plug>(go-def-type)
-"autocmd FileType go nmap <silent> gi <Plug>(go-implements)
-
-
 """ ==============
 """ Airline
 """ ==============
@@ -120,13 +113,6 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'jsformatter'
 let g:airline_powerline_fonts = 1
 
-""" ===========
-""" FZF
-""" ===========
-" let g:fzf_action = {'enter': 'tab split'}
-nnoremap <C-p> :Files<CR>
-nnoremap <C-g> :Buffers<CR>
-nnoremap <C-f> :Rg<CR>
 
 """ =========================
 """ COC
@@ -148,11 +134,26 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,ru
 
 autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go :call CocAction('runCommand', 'editor.action.organizeImport')
 autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go,*.zig,*.rs :call CocAction('runCommand', 'editor.action.formatDocument')
-nnoremap & :call CocAction('runCommand', 'document.toggleInlayHint')<CR>
 
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
 			\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
+nnoremap <leader>fa :Files<CR>
+nnoremap <leader>fg :GFiles<CR>
+nnoremap <leader>fb :Buffers<CR>
+nnoremap <leader>ff :Rg<CR>
+
 nmap <leader>m <Plug>(coc-codeaction-line)
+nnoremap & :call CocAction('runCommand', 'document.toggleInlayHint')<CR>
+inoremap <C-Space> <C-x><C-o>
+imap <C-@> <C-Space>
+
+nmap <leader>dc <Plug>VimspectorContinue
+nmap <leader>dx <Plug>VimspectorStop
+nmap <leader>ds <Plug>VimspectorRestart
+nmap <leader>dp <Plug>VimspectorPause
+nmap <leader>db <Plug>VimspectorToggleBreakpoint
+nmap <leader>do <Plug>VimspectorStepOver
+nmap <leader>di <Plug>VimspectorStepInto
