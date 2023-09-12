@@ -14,7 +14,7 @@ set completeopt+=longest
 set scrolloff=999
 set cursorline
 set foldmethod=syntax
-set foldlevelstart=99
+set foldlevel=999
 set termguicolors
 set re=0
 
@@ -23,7 +23,7 @@ let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
 
 filetype plugin on
 filetype indent on
-syntax enable
+"  syntax enable
 
 call plug#begin()
 
@@ -63,11 +63,14 @@ Plug 'github/copilot.vim'
 
 call plug#end()
 
-" let g:dracula_italic = 0
+let g:dracula_italic = 0
 " let g:airline_theme = 'gruvbox'
-let g:sonokai_enable_italic = 1
-let g:sonokai_style = 'espresso'
-colorscheme sonokai
+" let g:sonokai_enable_italic = 1
+" let g:sonokai_style = 'espresso'
+
+packadd! dracula_pro
+let g:dracula_colorterm = 0
+colorscheme dracula_pro
 
 
 """ ===============
@@ -84,25 +87,25 @@ colorscheme sonokai
 """ ===============
 """ vim-go
 """ ===============
-let g:go_fmt_autosave=1
-let g:go_metalinter_autosave=1
-let g:go_highlight_array_whitespace_error=1
-let g:go_highlight_chan_whitespace_error=1
-let g:go_highlight_extra_types=1
-let g:go_highlight_space_tab_error=1
-let g:go_highlight_trailing_whitespace_error=1
-let g:go_highlight_operators=1
-let g:go_highlight_functions=1
-let g:go_highlight_function_parameters=1
-let g:go_highlight_function_calls=1
-let g:go_highlight_fields=1
-let g:go_highlight_types=1
-let g:go_highlight_build_constraints=1
-let g:go_highlight_string_spellcheck=1
-let g:go_highlight_format_strings=0
-let g:go_highlight_generate_tags=0
-let g:go_highlight_variable_assignments=0
-let g:go_highlight_variable_declarations=0
+" let g:go_fmt_autosave=1
+" let g:go_metalinter_autosave=1
+ let g:go_highlight_array_whitespace_error=1
+ let g:go_highlight_chan_whitespace_error=1
+ let g:go_highlight_extra_types=1
+ let g:go_highlight_space_tab_error=1
+ let g:go_highlight_trailing_whitespace_error=1
+ let g:go_highlight_operators=1
+ let g:go_highlight_functions=1
+ let g:go_highlight_function_parameters=1
+ let g:go_highlight_function_calls=1
+ let g:go_highlight_fields=1
+ let g:go_highlight_types=1
+ let g:go_highlight_build_constraints=1
+ let g:go_highlight_string_spellcheck=1
+ let g:go_highlight_format_strings=1
+ let g:go_highlight_generate_tags=1
+ let g:go_highlight_variable_assignments=1
+ let g:go_highlight_variable_declarations=1
 
 
 """ ==============
@@ -132,8 +135,8 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,ru
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-space> coc#refresh()
 
-autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go :call CocAction('runCommand', 'editor.action.organizeImport')
-autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.go,*.zig,*.rs :call CocAction('runCommand', 'editor.action.formatDocument')
+autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx :call CocAction('runCommand', 'editor.action.organizeImport')
+autocmd BufWritePre *.js,*.ts,*.tsx,*.jsx,*.zig,*.rs :call CocAction('runCommand', 'editor.action.formatDocument')
 
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
