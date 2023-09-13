@@ -23,89 +23,52 @@ let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
 
 filetype plugin on
 filetype indent on
-"  syntax enable
+syntax enable
 
 call plug#begin()
 
 Plug 'tpope/vim-sensible'
-
 Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-
 Plug 'puremourning/vimspector'
-
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Plug 'dense-analysis/ale'
-
-" Plug 'dracula/vim', { 'as': 'dracula' }
-" Plug 'arcticicestudio/nord-vim'
-" Plug 'morhetz/gruvbox'
 Plug 'sainnhe/sonokai'
-
 Plug 'preservim/nerdtree'
-
 Plug 'airblade/vim-gitgutter'
-
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-
 Plug 'tpope/vim-fugitive'
-
-" Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-
 Plug 'ryanoasis/vim-devicons'
 Plug 'Yggdroot/indentLine'
-
 Plug 'github/copilot.vim'
-
-"Plug 'jiangmiao/auto-pairs'
 
 call plug#end()
 
 let g:dracula_italic = 0
-" let g:airline_theme = 'gruvbox'
-" let g:sonokai_enable_italic = 1
-" let g:sonokai_style = 'espresso'
 
 packadd! dracula_pro
 let g:dracula_colorterm = 0
 colorscheme dracula_pro
 
 
-""" ===============
-""" NERDTree
-""" ===============
-" let NERDTreeQuitOnOpen=1
-" let NERDTreeDirArrows=1
-" let NERDTreeMinimalUI=1
-" let NERDTreeShowHidden=1
-" let NERDTreeWinSize=40
-" nnoremap <leader>b :NERDTreeFind<CR>
-" nnoremap <leader>v :NERDTreeToggle<CR>
-
-""" ===============
-""" vim-go
-""" ===============
-" let g:go_fmt_autosave=1
-" let g:go_metalinter_autosave=1
- let g:go_highlight_array_whitespace_error=1
- let g:go_highlight_chan_whitespace_error=1
- let g:go_highlight_extra_types=1
- let g:go_highlight_space_tab_error=1
- let g:go_highlight_trailing_whitespace_error=1
- let g:go_highlight_operators=1
- let g:go_highlight_functions=1
- let g:go_highlight_function_parameters=1
- let g:go_highlight_function_calls=1
- let g:go_highlight_fields=1
- let g:go_highlight_types=1
- let g:go_highlight_build_constraints=1
- let g:go_highlight_string_spellcheck=1
- let g:go_highlight_format_strings=1
- let g:go_highlight_generate_tags=1
- let g:go_highlight_variable_assignments=1
- let g:go_highlight_variable_declarations=1
+let g:go_highlight_array_whitespace_error=1
+let g:go_highlight_chan_whitespace_error=1
+let g:go_highlight_extra_types=1
+let g:go_highlight_space_tab_error=1
+let g:go_highlight_trailing_whitespace_error=1
+let g:go_highlight_operators=1
+let g:go_highlight_functions=1
+let g:go_highlight_function_parameters=1
+let g:go_highlight_function_calls=1
+let g:go_highlight_fields=1
+let g:go_highlight_types=1
+let g:go_highlight_build_constraints=1
+let g:go_highlight_string_spellcheck=1
+let g:go_highlight_format_strings=1
+let g:go_highlight_generate_tags=1
+let g:go_highlight_variable_assignments=1
+let g:go_highlight_variable_declarations=1
 
 
 """ ==============
@@ -115,6 +78,8 @@ colorscheme dracula_pro
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'jsformatter'
 let g:airline_powerline_fonts = 1
+let g:airline_left_sep=' '
+let g:airline_right_sep=' '
 
 
 """ =========================
@@ -143,10 +108,14 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
 			\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
+let g:netrw_winsize=20
+let g:netrw_liststyle=3
+
 nnoremap <leader>fa :Files<CR>
 nnoremap <leader>fg :GFiles<CR>
 nnoremap <leader>fb :Buffers<CR>
 nnoremap <leader>ff :Rg<CR>
+nnoremap <leader>fe :Explore<CR>
 
 nmap <leader>m <Plug>(coc-codeaction-line)
 nnoremap & :call CocAction('runCommand', 'document.toggleInlayHint')<CR>
