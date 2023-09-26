@@ -134,3 +134,10 @@ alias vim=/opt/homebrew/Cellar/vim/9.0.1850/bin/vim
  if [ -z "$TMUX" ]; then
    tmux attach-session || tmux new-session
  fi
+
+# bun completions
+[ -s "/Users/raian/.bun/_bun" ] && source "/Users/raian/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
