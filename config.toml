@@ -1,0 +1,19 @@
+theme = "monokai_pro"
+
+[editor]
+line-number = "absolute"
+mouse = false
+true-color = true
+idle-timeout = 100
+bufferline = "always"
+auto-format = true
+cursorline = true
+
+[editor.statusline]
+left = ["mode", "spinner"]
+center = ["file-name"]
+right = ["diagnostics", "selections", "position", "file-encoding", "file-line-ending", "file-type"]
+separator = "|"
+
+[editor.lsp]
+display-messages = true

@@ -7,6 +7,8 @@ cp ~/.vimrc .
 cp ~/.zshrc .
 cp ~/.aliases.sh .
 cp ~/.vim/coc-settings.json .
+cp ~/.config/helix/config.toml .
+cp ~/.config/helix/languages.toml .
 cp -r ~/tmux_scripts .
 
 DATE=$(date +%m%d%Y)
