@@ -17,6 +17,7 @@ set foldmethod=syntax
 set foldlevel=999
 set termguicolors
 set re=0
+set background=dark
 
 let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
@@ -42,14 +43,17 @@ Plug 'tpope/vim-fugitive'
 Plug 'ryanoasis/vim-devicons'
 Plug 'Yggdroot/indentLine'
 Plug 'github/copilot.vim'
+Plug 'morhetz/gruvbox'
 
 call plug#end()
 
-let g:dracula_italic = 0
+" let g:dracula_italic = 0
 
-packadd! dracula_pro
-let g:dracula_colorterm = 0
-colorscheme dracula_pro
+" packadd! dracula_pro
+" let g:dracula_colorterm = 0
+let g:gruvbox_italic = 1
+let g:gruvbox_italicize_strings = 1
+colorscheme gruvbox
 
 
 let g:go_highlight_array_whitespace_error=1
@@ -81,6 +85,23 @@ let g:airline_powerline_fonts = 1
 let g:airline_left_sep=' '
 let g:airline_right_sep=' '
 
+nnoremap <Right> :echo "No right for you!"<CR>
+vnoremap <Right> :<C-u>echo "No right for you!"<CR>
+inoremap <Right> <C-o>:echo "No right for you!"<CR>
+
+
+nnoremap <Down> :echo "No down for you!"<CR>
+vnoremap <Down> :<C-u>echo "No down for you!"<CR>
+inoremap <Down> <C-o>:echo "No down for you!"<CR>
+
+nnoremap <Up> :echo "No up for you!"<CR>
+vnoremap <Up> :<C-u>echo "No up for you!"<CR>
+inoremap <Up> <C-o>:echo "No up for you!"<CR>
+
+nnoremap <Left> :echo "No left for you!"<CR>
+vnoremap <Left> :<C-u>echo "No left for you!"<CR>
+inoremap <Left> <C-o>:echo "No left for you!"<CR>
+
 
 """ =========================
 """ COC
@@ -111,11 +132,14 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,ru
 let g:netrw_winsize=20
 let g:netrw_liststyle=3
 
-nnoremap <leader>fa :Files<CR>
-nnoremap <leader>fg :GFiles<CR>
-nnoremap <leader>fb :Buffers<CR>
-nnoremap <leader>ff :Rg<CR>
-nnoremap <leader>fe :Explore<CR>
+nnoremap <space>F :Files<CR>
+nnoremap <space>f :GFiles<CR>
+nnoremap <space>b :Buffers<CR>
+nnoremap <space>/ :Rg<CR>
+nnoremap <space>E :Explore<CR>
+
+nnoremap <space>1 :e $MYVIMRC<CR>
+nnoremap <space>2 :source $MYVIMRC<CR>
 
 nmap <leader>m <Plug>(coc-codeaction-line)
 nnoremap & :call CocAction('runCommand', 'document.toggleInlayHint')<CR>
