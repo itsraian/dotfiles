@@ -129,7 +129,7 @@ esac
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 alias python=python3
-alias vim=/opt/homebrew/Cellar/vim/9.0.2050_1/bin/vim
+alias vim=nvim
 
  if [ -z "$TMUX" ]; then
    tmux attach-session || tmux new-session
