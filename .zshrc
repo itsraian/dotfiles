@@ -128,9 +128,6 @@ esac
 # pnpm end
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
-alias python=python3
-alias vim=nvim
-
  if [ -z "$TMUX" ]; then
    tmux attach-session || tmux new-session
  fi
