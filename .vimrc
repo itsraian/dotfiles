@@ -15,14 +15,13 @@ set background=dark
 set showmode
 set signcolumn=yes
 set number
-set updatetime=300
+set updatetime=100
 set hlsearch
 set incsearch
 set cursorline
 set scrolloff=999
 set t_Co=256
 set title
-set colorcolumn=121
 set textwidth=120
 set wildmode=list:longest,list:full
 set wildmenu
@@ -80,18 +79,19 @@ Plug 'sainnhe/sonokai'
 Plug 'sheerun/vim-polyglot'
 Plug 'wakatime/vim-wakatime'
 Plug 'prabirshrestha/asyncomplete.vim'
-
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'github/copilot.vim'
 Plug 'jparise/vim-graphql'
+Plug 'prettier/vim-prettier', {
+      \ 'do': 'yarn install --frozen-lockfile --production',
+      \ 'branch': 'master'
+      \ }
 
 call plug#end()
 
 let g:sonokai_style = 'andromeda'
 let g:sonokai_enable_italic = 1
 colorscheme sonokai
-
-let g:notes_directories = ['/Users/raian/notes']
 
 let g:go_highlight_array_whitespace_error=1
 let g:go_highlight_chan_whitespace_error=1
@@ -139,17 +139,81 @@ function! MyLspProgress() abort
 endfunction
 
 let g:lsp_diagnostics_float_cursor = 1
-let g:lsp_diagnostics_echo_cursor = 0
-let g:lsp_diagnostics_virtual_text_enabled = 0
+let g:lsp_diagnostics_signs_error = {'text': '✗'}
+let g:lsp_diagnostics_signs_warning = {'text': '‼'} 
+let g:lsp_diagnostics_signs_hint = {'text': '→'}
+let g:lsp_document_code_action_signs_hint = {'text': '>'}
+let g:lsp_document_code_action_signs_delay = 50
+let g:lsp_use_native_client = 1
+let g:lsp_semantic_enabled = 1
+let g:lsp_diagnostics_virtual_text_align = "right"
+let g:lsp_inlay_hints_enabled = 1
+let g:lsp_format_sync_timeout = 500
+
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+imap <c-space> <Plug>(asyncomplete_force_refresh)
+imap <c-@> <Plug>(asyncomplete_force_refresh)
 
 if executable('gopls')
   au User lsp_setup call lsp#register_server({
         \ 'name': 'gopls',
         \ 'cmd': {server_info->['gopls']},
         \ 'allowlist': ['go'],
-        \ 'init_options': {
-        \  'memoryMode': "DegradeClosed",
+        \ 'workspace_config': {
         \  'staticcheck': v:true,
+        \ },
+        \ })
+endif
+
+if executable('typescript-language-server')
+  au User lsp_setup call lsp#register_server({
+        \ 'name': 'typescript',
+        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
+        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
+        \ 'allowlist': ['javascript', 'javascriptreact', 'typescript', 'typescript.tsx', 'typescriptreact'],
+        \ })
+endif
+
+
+
+if executable('vscode-eslint-language-server')
+  au User lsp_setup call lsp#register_server({
+        \ 'name': 'eslint',
+        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'vscode-eslint-language-server --stdio']},
+        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json'))},
+        \ 'allowlist': ['javascript', 'javascriptreact', 'typescript', 'typescript.tsx', 'typescriptreact'],
+        \ 'workspace_config': {
+        \   'validate': 'probe',
+        \   'packageManager': 'npm',
+        \   'useESLintClass': v:false,
+        \   'experimental': {
+        \     'useFlatConfig': v:false,
+        \   },
+        \   'codeActionOnSave': {
+        \     'mode': 'all',
+        \   },
+        \   'format': v:false,
+        \   'quiet': v:false,
+        \   'onIgnoredFiles': 'off',
+        \   'options': {},
+        \   'rulesCustomizations' : [],
+        \   'run': 'onType',
+        \   'problems': { 'shortenToSingleLine': v:false },
+        \   'nodePath': v:null,
+        \   'workingDirectories': [{"mode": "auto"}],
+        \   'trace': {'server': 'verbose'},
+        \   'workspaceFolder': {
+        \     'uri': lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json')),
+        \   },
+        \   'codeAction': {
+        \     'disableRuleComment': {
+        \       'enable': v:true,
+        \       'location': 'separateLine',
+        \     },
+        \     'showDocumentation': {
+        \       'enable': v:true,
+        \     },
+        \   },
         \ },
         \ })
 endif
@@ -170,7 +234,6 @@ function! s:on_lsp_buffer_enabled() abort
   nnoremap <space>D :LspDocumentDiagnostics --buffers=*<CR>
   nnoremap <space>a :LspCodeAction --ui=float<CR>
 
-  let	g:lsp_format_sync_timeout = 1000
   autocmd BufWritePre *.go
         \ call execute('LspDocumentFormatSync') |
         \ call execute('LspCodeActionSync source.organizeImports')
@@ -181,25 +244,7 @@ augroup lsp_install
   autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
-""" =========================
-""" COC
-""" =========================
-
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact nnoremap <space>D :CocList diagnostics<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact nnoremap <silent> K :call CocActionAsync('doHover')<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact inoremap <silent> <space>h :CocActionSync('showSignatureHelp')<CR>
-
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> gd <Plug>(coc-definition)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> gy <Plug>(coc-type-definition)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> gi <Plug>(coc-implementation)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> gr <Plug>(coc-references)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> [g <Plug>(coc-diagnostic-prev)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact imap <silent><expr> <c-space> coc#refresh()
-
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+au FileType javascript,typescript,javascriptreact,typescriptreact au BufWritePre <buffer> :PrettierAsync
 
 au FocusGained,BufEnter * :silent! !
 au FocusLost,WinLeave * :silent! wa
