@@ -15,13 +15,14 @@ set background=dark
 set showmode
 set signcolumn=yes
 set number
-set updatetime=100
+set updatetime=300
 set hlsearch
 set incsearch
 set cursorline
 set scrolloff=999
 set t_Co=256
 set title
+set colorcolumn=121
 set textwidth=120
 set wildmode=list:longest,list:full
 set wildmenu
@@ -79,7 +80,8 @@ Plug 'sainnhe/sonokai'
 Plug 'sheerun/vim-polyglot'
 Plug 'wakatime/vim-wakatime'
 Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'github/copilot.vim'
 Plug 'jparise/vim-graphql'
 Plug 'preservim/tagbar'
@@ -163,7 +165,8 @@ if executable('gopls')
         \ 'name': 'gopls',
         \ 'cmd': {server_info->['gopls']},
         \ 'allowlist': ['go'],
-        \ 'initialization_options': {
+        \ 'init_options': {
+        \  'memoryMode': "DegradeClosed",
         \  'staticcheck': v:true,
         \ },
         \ })
@@ -234,6 +237,7 @@ function! s:on_lsp_buffer_enabled() abort
   nnoremap <space>D :LspDocumentDiagnostics --buffers=*<CR>
   nnoremap <space>a :LspCodeAction --ui=float<CR>
 
+  let	g:lsp_format_sync_timeout = 1000
   autocmd BufWritePre *.go
         \ call execute('LspDocumentFormatSync') |
         \ call execute('LspCodeActionSync source.organizeImports')
