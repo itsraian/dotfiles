@@ -13,6 +13,7 @@ cp -r ~/tmux_scripts .
 
 DATE=$(date +%m%d%Y)
 echo $DATE
+git checkout -b "$DATE"
 git add .
 git commit -m "BKP $DATE"
-git push
+git push -u origin "$DATE"
