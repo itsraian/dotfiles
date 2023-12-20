@@ -82,6 +82,7 @@ Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'github/copilot.vim'
 Plug 'jparise/vim-graphql'
+Plug 'preservim/tagbar'
 Plug 'prettier/vim-prettier', {
       \ 'do': 'yarn install --frozen-lockfile --production',
       \ 'branch': 'master'
@@ -145,12 +146,15 @@ let g:lsp_diagnostics_signs_hint = {'text': '→'}
 let g:lsp_document_code_action_signs_hint = {'text': '>'}
 let g:lsp_document_code_action_signs_delay = 50
 let g:lsp_use_native_client = 1
+let g:lsp_use_event_queue = 1
 let g:lsp_semantic_enabled = 1
 let g:lsp_diagnostics_virtual_text_align = "right"
-let g:lsp_inlay_hints_enabled = 1
+let g:lsp_inlay_hints_enabled = 0
 let g:lsp_format_sync_timeout = 500
+let g:lsp_log_verbose = 1
+let g:lsp_log_file = expand('~/vim-lsp.log')
 
-inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+inoremap <expr> <cr>pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 imap <c-space> <Plug>(asyncomplete_force_refresh)
 imap <c-@> <Plug>(asyncomplete_force_refresh)
 
@@ -170,15 +174,11 @@ if executable('typescript-language-server')
         \ 'name': 'typescript',
         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-        \ 'allowlist': ['javascript', 'javascriptreact', 'typescript', 'typescript.tsx', 'typescriptreact'],
+        \ 'whitelist': ['javascript', 'javascriptreact', 'typescript', 'typescript.tsx', 'typescriptreact'],
         \ 'initialization_options': {
-        \   'preferences': {
-        \   },
         \ },
         \ })
 endif
-
-
 
 if executable('vscode-eslint-language-server')
   au User lsp_setup call lsp#register_server({
@@ -187,25 +187,22 @@ if executable('vscode-eslint-language-server')
         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json'))},
         \ 'allowlist': ['javascript', 'javascriptreact', 'typescript', 'typescript.tsx', 'typescriptreact'],
         \ 'workspace_config': {
-        \   'validate': 'probe',
+        \   'validate': 'on',
         \   'packageManager': 'npm',
         \   'useESLintClass': v:false,
         \   'experimental': {
         \     'useFlatConfig': v:false,
         \   },
-        \   'codeActionOnSave': {
-        \     'mode': 'all',
-        \   },
+        \   'codeActionOnSave': {'enable': v:false, 'mode': 'all' },
         \   'format': v:false,
         \   'quiet': v:false,
         \   'onIgnoredFiles': 'off',
         \   'options': {},
-        \   'rulesCustomizations' : [],
+        \   'rulesCustomizations': [],
         \   'run': 'onType',
         \   'problems': { 'shortenToSingleLine': v:false },
         \   'nodePath': v:null,
-        \   'workingDirectories': [{"mode": "auto"}],
-        \   'trace': {'server': 'verbose'},
+        \   'workingDirectories': [{'mode': 'auto'}],
         \   'workspaceFolder': {
         \     'uri': lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json')),
         \   },
@@ -223,7 +220,6 @@ if executable('vscode-eslint-language-server')
 endif
 
 function! s:on_lsp_buffer_enabled() abort
-  setlocal signcolumn=yes
   if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
   nmap <buffer> gd <plug>(lsp-definition)
   nmap <buffer> gs <plug>(lsp-document-symbol-search)
@@ -249,6 +245,7 @@ augroup lsp_install
 augroup END
 
 au FileType javascript,typescript,javascriptreact,typescriptreact au BufWritePre <buffer> :PrettierAsync
+highlight lspReference ctermfg=white ctermbg=red 
 
 au FocusGained,BufEnter * :silent! !
 au FocusLost,WinLeave * :silent! wa
