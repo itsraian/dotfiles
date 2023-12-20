@@ -22,7 +22,6 @@ set cursorline
 set scrolloff=999
 set t_Co=256
 set title
-set colorcolumn=121
 set textwidth=120
 set wildmode=list:longest,list:full
 set wildmenu
@@ -63,11 +62,13 @@ let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
 let &t_ti = "\e[?1004h"
 let &t_te = "\e[?1004l"
 
+set runtimepath+=~/workspaces/vim-lsp
+
 call plug#begin()
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'prabirshrestha/vim-lsp'
+" Plug 'prabirshrestha/vim-lsp'
 Plug 'puremourning/vimspector'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
@@ -80,11 +81,10 @@ Plug 'sainnhe/sonokai'
 Plug 'sheerun/vim-polyglot'
 Plug 'wakatime/vim-wakatime'
 Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'github/copilot.vim'
 Plug 'jparise/vim-graphql'
-Plug 'preservim/tagbar'
 Plug 'prettier/vim-prettier', {
       \ 'do': 'yarn install --frozen-lockfile --production',
       \ 'branch': 'master'
@@ -133,7 +133,6 @@ let g:indentLine_char = '│'
 """ Vim LSP
 """ ==============
 
-let g:lsp_work_done_progress_enabled = 1
 function! MyLspProgress() abort
   let l:progress = lsp#get_progress()
   if empty(l:progress) | return '' | endif
@@ -143,7 +142,7 @@ endfunction
 
 let g:lsp_diagnostics_float_cursor = 1
 let g:lsp_diagnostics_signs_error = {'text': '✗'}
-let g:lsp_diagnostics_signs_warning = {'text': '‼'} 
+let g:lsp_diagnostics_signs_warning = {'text': '⚠'} 
 let g:lsp_diagnostics_signs_hint = {'text': '→'}
 let g:lsp_document_code_action_signs_hint = {'text': '>'}
 let g:lsp_document_code_action_signs_delay = 50
@@ -155,10 +154,25 @@ let g:lsp_inlay_hints_enabled = 0
 let g:lsp_format_sync_timeout = 500
 let g:lsp_log_verbose = 1
 let g:lsp_log_file = expand('~/vim-lsp.log')
+let g:lsp_work_done_progress_enabled = 1
 
 inoremap <expr> <cr>pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 imap <c-space> <Plug>(asyncomplete_force_refresh)
 imap <c-@> <Plug>(asyncomplete_force_refresh)
+
+if executable('vim-language-server')
+  augroup LspVim
+    autocmd!
+    autocmd User lsp_setup call lsp#register_server({
+          \ 'name': 'vim-language-server',
+          \ 'cmd': {server_info->['vim-language-server', '--stdio']},
+          \ 'whitelist': ['vim'],
+          \ 'initialization_options': {
+          \   'vimruntime': $VIMRUNTIME,
+          \   'runtimepath': &rtp,
+          \ }})
+  augroup END
+endif
 
 if executable('gopls')
   au User lsp_setup call lsp#register_server({
@@ -183,6 +197,7 @@ if executable('typescript-language-server')
         \ })
 endif
 
+
 if executable('vscode-eslint-language-server')
   au User lsp_setup call lsp#register_server({
         \ 'name': 'eslint',
@@ -190,33 +205,15 @@ if executable('vscode-eslint-language-server')
         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json'))},
         \ 'allowlist': ['javascript', 'javascriptreact', 'typescript', 'typescript.tsx', 'typescriptreact'],
         \ 'workspace_config': {
-        \   'validate': 'on',
-        \   'packageManager': 'npm',
-        \   'useESLintClass': v:false,
-        \   'experimental': {
-        \     'useFlatConfig': v:false,
-        \   },
-        \   'codeActionOnSave': {'enable': v:false, 'mode': 'all' },
-        \   'format': v:false,
-        \   'quiet': v:false,
-        \   'onIgnoredFiles': 'off',
-        \   'options': {},
-        \   'rulesCustomizations': [],
         \   'run': 'onType',
+        \   'experimental': { 'useFlatConfig': v:false },
+        \   'validate': 'probe',
         \   'problems': { 'shortenToSingleLine': v:false },
+        \   'rulesCustomizations': [],
+        \   'packageManager': 'npm',
         \   'nodePath': v:null,
-        \   'workingDirectories': [{'mode': 'auto'}],
         \   'workspaceFolder': {
         \     'uri': lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json')),
-        \   },
-        \   'codeAction': {
-        \     'disableRuleComment': {
-        \       'enable': v:true,
-        \       'location': 'separateLine',
-        \     },
-        \     'showDocumentation': {
-        \       'enable': v:true,
-        \     },
         \   },
         \ },
         \ })
