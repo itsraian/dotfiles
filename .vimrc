@@ -76,44 +76,16 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
 Plug 'ryanoasis/vim-devicons'
 Plug 'Yggdroot/indentLine'
-Plug 'rhysd/vim-healthcheck'
 Plug 'sainnhe/sonokai'
-Plug 'sheerun/vim-polyglot'
 Plug 'wakatime/vim-wakatime'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-
 Plug 'github/copilot.vim'
-Plug 'jparise/vim-graphql'
-Plug 'prettier/vim-prettier', {
-      \ 'do': 'yarn install --frozen-lockfile --production',
-      \ 'branch': 'master'
-      \ }
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
 let g:sonokai_style = 'andromeda'
 let g:sonokai_enable_italic = 1
 colorscheme sonokai
-
-let g:go_highlight_array_whitespace_error=1
-let g:go_highlight_chan_whitespace_error=1
-let g:go_highlight_extra_types=1
-let g:go_highlight_space_tab_error=1
-let g:go_highlight_trailing_whitespace_error=1
-let g:go_highlight_operators=1
-let g:go_highlight_functions=1
-let g:go_highlight_function_parameters=1
-let g:go_highlight_function_calls=1
-let g:go_highlight_fields=1
-let g:go_highlight_types=1
-let g:go_highlight_build_constraints=1
-let g:go_highlight_string_spellcheck=1
-let g:go_highlight_format_strings=1
-let g:go_highlight_generate_tags=1
-let g:go_highlight_variable_assignments=1
-let g:go_highlight_variable_declarations=1
-
 
 """ ==============
 """ Airline
@@ -124,132 +96,42 @@ let g:airline#extensions#tabline#formatter = 'jsformatter'
 let g:airline_powerline_fonts = 1
 let g:airline_left_sep=' '
 let g:airline_right_sep=' '
-let g:airline_section_c = airline#section#create(['%{MyLspProgress()}'])
 
 let g:indentLine_setColors = 0
 let g:indentLine_char = '│'
 
-""" ==============
-""" Vim LSP
-""" ==============
-
-function! MyLspProgress() abort
-  let l:progress = lsp#get_progress()
-  if empty(l:progress) | return '' | endif
-  let l:progress = l:progress[len(l:progress) - 1]
-  return l:progress['server'] . ': ' . l:progress['title']
-endfunction
-
-let g:lsp_diagnostics_float_cursor = 1
-let g:lsp_diagnostics_signs_error = {'text': '✗'}
-let g:lsp_diagnostics_signs_warning = {'text': '⚠'} 
-let g:lsp_diagnostics_signs_hint = {'text': '→'}
-let g:lsp_document_code_action_signs_hint = {'text': '>'}
-let g:lsp_document_code_action_signs_delay = 50
-let g:lsp_use_native_client = 1
-let g:lsp_use_event_queue = 1
-let g:lsp_semantic_enabled = 1
-let g:lsp_diagnostics_virtual_text_align = "right"
-let g:lsp_inlay_hints_enabled = 0
-let g:lsp_format_sync_timeout = 500
-let g:lsp_log_verbose = 1
-let g:lsp_log_file = expand('~/vim-lsp.log')
-let g:lsp_work_done_progress_enabled = 1
-
-inoremap <expr> <cr>pumvisible() ? asyncomplete#close_popup() : "\<cr>"
-imap <c-space> <Plug>(asyncomplete_force_refresh)
-imap <c-@> <Plug>(asyncomplete_force_refresh)
-
-if executable('vim-language-server')
-  augroup LspVim
-    autocmd!
-    autocmd User lsp_setup call lsp#register_server({
-          \ 'name': 'vim-language-server',
-          \ 'cmd': {server_info->['vim-language-server', '--stdio']},
-          \ 'whitelist': ['vim'],
-          \ 'initialization_options': {
-          \   'vimruntime': $VIMRUNTIME,
-          \   'runtimepath': &rtp,
-          \ }})
-  augroup END
-endif
-
-if executable('gopls')
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'gopls',
-        \ 'cmd': {server_info->['gopls']},
-        \ 'allowlist': ['go'],
-        \ 'init_options': {
-        \  'memoryMode': "DegradeClosed",
-        \  'staticcheck': v:true,
-        \ },
-        \ })
-endif
-
-if executable('typescript-language-server')
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'typescript',
-        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
-        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-        \ 'whitelist': ['javascript', 'javascriptreact', 'typescript', 'typescript.tsx', 'typescriptreact'],
-        \ 'initialization_options': {
-        \ },
-        \ })
-endif
-
-
-if executable('vscode-eslint-language-server')
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'eslint',
-        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'vscode-eslint-language-server --stdio']},
-        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json'))},
-        \ 'allowlist': ['javascript', 'javascriptreact', 'typescript', 'typescript.tsx', 'typescriptreact'],
-        \ 'workspace_config': {
-        \   'run': 'onType',
-        \   'experimental': { 'useFlatConfig': v:false },
-        \   'validate': 'probe',
-        \   'problems': { 'shortenToSingleLine': v:false },
-        \   'rulesCustomizations': [],
-        \   'packageManager': 'npm',
-        \   'nodePath': v:null,
-        \   'workspaceFolder': {
-        \     'uri': lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'package.json')),
-        \   },
-        \ },
-        \ })
-endif
-
-function! s:on_lsp_buffer_enabled() abort
-  if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-  nmap <buffer> gd <plug>(lsp-definition)
-  nmap <buffer> gs <plug>(lsp-document-symbol-search)
-  nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
-  nmap <buffer> gr <plug>(lsp-references)
-  nmap <buffer> gi <plug>(lsp-implementation)
-  nmap <buffer> gt <plug>(lsp-type-definition)
-  nmap <buffer> <leader>rn <plug>(lsp-rename)
-  nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-  nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-  nmap <buffer> K <plug>(lsp-hover)
-  nnoremap <space>D :LspDocumentDiagnostics --buffers=*<CR>
-  nnoremap <space>a :LspCodeAction --ui=float<CR>
-
-  let	g:lsp_format_sync_timeout = 1000
-  autocmd BufWritePre *.go
-        \ call execute('LspDocumentFormatSync') |
-        \ call execute('LspCodeActionSync source.organizeImports')
-endfunction
-
-augroup lsp_install
-  au!
-  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
-
-au FileType javascript,typescript,javascriptreact,typescriptreact au BufWritePre <buffer> :PrettierAsync
-highlight lspReference ctermfg=white ctermbg=red 
-
 au FocusGained,BufEnter * :silent! !
 au FocusLost,WinLeave * :silent! wa
+
+""" =========================
+""" COC
+""" =========================
+
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <space>D :CocList diagnostics<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <space>a <Plug>(coc-codeaction-cursor)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <space>A <Plug>(coc-codeaction-line)
+
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <silent> K :call CocActionAsync('doHover')<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust inoremap <silent> <leader>p :CocActionSync('showSignatureHelp')<CR>
+
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gd <Plug>(coc-definition)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gy <Plug>(coc-type-definition)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gi <Plug>(coc-implementation)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gr <Plug>(coc-references)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> [g <Plug>(coc-diagnostic-prev)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-space> coc#refresh()
+
+autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
+autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.formatDocument')
+
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                        \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+highlight CocHighlightText ctermfg=white ctermbg=gray
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
 vnoremap <Left> :<C-u>echo "No arrow for you!"<CR>
@@ -283,11 +165,3 @@ nnoremap <space>n :set number! <bar> IndentLinesToggle<CR>
 
 nnoremap <space>1 :e $MYVIMRC<CR>
 nnoremap <space>2 :source $MYVIMRC<CR>
-
-nmap <leader>dc <Plug>VimspectorContinue
-nmap <leader>dx <Plug>VimspectorStop
-nmap <leader>ds <Plug>VimspectorRestart
-nmap <leader>dp <Plug>VimspectorPause
-nmap <leader>db <Plug>VimspectorToggleBreakpoint
-nmap <leader>do <Plug>VimspectorStepOver
-nmap <leader>di <Plug>VimspectorStepInto

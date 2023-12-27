@@ -1,6 +1,4 @@
 {
-  "coc.preferences.formatOnSave": true,
-  "suggest.autoTrigger": "trigger",
   "suggest.maxCompleteItemCount": 50,
   "suggest.completionItemKindLabels": {
     "text": "text",
@@ -10,28 +8,19 @@
     "field": "prop",
     "variable": "var"
   },
-  "codeLens.enable": true,
   "colors.enable": true,
+  "semanticTokens.enable": true,
   "diagnostic.virtualText": true,
-  "diagnostic.virtualTextCurrentLineOnly": true,
-  "typescript.referencesCodeLens.enabled": false,
-  "typescript.implementationsCodeLens.enabled": false,
-  "typescript.inlayHints.parameterNames.enabled": "literals",
-  "typescript.inlayHints.parameterTypes.enabled": false,
-  "typescript.inlayHints.variableTypes.enabled": false,
-  "typescript.inlayHints.propertyDeclarationTypes.enabled": false,
-  "typescript.inlayHints.functionLikeReturnTypes.enabled": false,
-  "typescript.inlayHints.enumMemberValues.enabled": true,
+  "diagnostic.virtualTextCurrentLineOnly": false,
+  "tsserver.tsdk": "/home/user/web-code/.yarn/sdks/typescript/lib",
   "tsserver.experimental.enableProjectDiagnostics": true,
-  "eslint.trace.server": "verbose",
-  "eslint.packageManager": "pnpm",
+  "prettier.prettierPath": "/home/user/web-code/.yarn/sdks/prettier/index.js",
   "languageserver": {
     "golang": {
       "command": "gopls",
       "rootPatterns": ["go.mod"],
       "filetypes": ["go"],
       "initializationOptions": {
-        "usePlaceholders": true,
         "staticcheck": true
       }
     },
