@@ -27,6 +27,8 @@ set wildmode=list:longest,list:full
 set wildmenu
 set laststatus=2
 
+set nofoldenable
+
 set spell
 set spelllang=en_us
 
