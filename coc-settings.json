@@ -12,9 +12,7 @@
   "semanticTokens.enable": true,
   "diagnostic.virtualText": true,
   "diagnostic.virtualTextCurrentLineOnly": false,
-  "tsserver.tsdk": "/home/user/web-code/.yarn/sdks/typescript/lib",
   "tsserver.experimental.enableProjectDiagnostics": true,
-  "prettier.prettierPath": "/home/user/web-code/.yarn/sdks/prettier/index.js",
   "languageserver": {
     "golang": {
       "command": "gopls",
