@@ -27,9 +27,6 @@ set wildmode=list:longest,list:full
 set wildmenu
 set laststatus=2
 
-set spell
-set spelllang=en_us
-
 set history=1000
 set undolevels=1000
 
@@ -142,7 +139,7 @@ function! CheckBackspace() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-highlight CocHighlightText ctermfg=white ctermbg=gray
+" highlight CocHighlightText ctermfg=white ctermbg=gray
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
 vnoremap <Left> :<C-u>echo "No arrow for you!"<CR>
