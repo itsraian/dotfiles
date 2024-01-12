@@ -96,6 +96,8 @@ let g:airline_right_sep=' '
 
 let g:indentLine_setColors = 0
 let g:indentLine_char = '│'
+let g:indentLine_setConceal = 0
+
 
 au FocusGained,BufEnter * :silent! !
 au FocusLost,WinLeave * :silent! wa
