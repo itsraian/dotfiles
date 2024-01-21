@@ -103,7 +103,6 @@ au FocusLost,WinLeave * :silent! wa
 """ =========================
 
 let lspOpts = #{
-      \ autoHighlight: v:true,
       \ autoPopulateDiags: v:true,
       \ diagVirtualTextAlign: 'after',
       \ noNewlineInCompletion: v:true,
@@ -120,7 +119,10 @@ let lspServers = [#{
       \   filetype: ['go', 'gomod'],
       \   path: 'gopls',
       \   args: ['serve'],
-      \   syncInit: v:true
+      \   syncInit: v:true,
+      \   initializationOptions: {
+      \     'semanticTokens': v:true
+      \   },
       \ },
       \ #{
       \   name: 'eslint',
