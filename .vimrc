@@ -53,15 +53,19 @@ if &term =~ '256color'
   set t_ut=
 endif
 
+
 let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
 let &t_ti = "\e[?1004h"
 let &t_te = "\e[?1004l"
 
+set runtimepath+=~/workspaces/vim-lsp
+
 call plug#begin()
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+" Plug 'prabirshrestha/vim-lsp'
 Plug 'puremourning/vimspector'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
@@ -72,7 +76,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'sainnhe/sonokai'
 Plug 'wakatime/vim-wakatime'
 Plug 'github/copilot.vim'
-Plug 'yegappan/lsp'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
@@ -99,95 +103,45 @@ au FocusGained,BufEnter * :silent! !
 au FocusLost,WinLeave * :silent! wa
 
 """ =========================
-""" LSP
+""" COC
 """ =========================
 
-let lspOpts = #{
-      \ autoPopulateDiags: v:true,
-      \ diagVirtualTextAlign: 'after',
-      \ noNewlineInCompletion: v:true,
-      \ semanticHighlight: v:true,
-      \ showDiagOnStatusLine: v:true,
-      \ showDiagWithVirtualText: v:true,
-      \ usePopupInCodeAction: v:true,
-      \ useQuickfixForLocation: v:true
-      \ }
-autocmd VimEnter * call LspOptionsSet(lspOpts)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <space>D :CocList diagnostics<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <space>a <Plug>(coc-codeaction-cursor)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <space>A <Plug>(coc-codeaction-line)
 
-let lspServers = [#{
-      \   name: 'golang',
-      \   filetype: ['go', 'gomod'],
-      \   path: 'gopls',
-      \   args: ['serve'],
-      \   syncInit: v:true,
-      \   initializationOptions: {
-      \     'semanticTokens': v:true
-      \   },
-      \ },
-      \ #{
-      \   name: 'eslint',
-      \   filetype: ['javascript', 'typescript', 'typescriptreact', 'javascriptreact'],
-      \   path: 'vscode-eslint-language-server',
-      \   args: ['--stdio'],
-      \   workspaceConfig: {
-      \    'validate': 'on',
-      \    'packageManager': 'npm',
-      \    'useESLintClass': v:false,
-      \    'experimental': {
-      \      'useFlatConfig': v:false,
-      \    },
-      \    'codeActionOnSave': {'enable': v:true, 'mode': 'all' },
-      \    'format': v:false,
-      \    'quiet': v:false,
-      \    'onIgnoredFiles': 'off',
-      \    'options': {},
-      \    'rulesCustomizations': [],
-      \    'run': 'onType',
-      \    'problems': { 'shortenToSingleLine': v:false },
-      \    'nodePath': v:null,
-      \    'workingDirectories': [{'mode': 'auto'}],
-      \      'workspaceFolder': {
-      \    },
-      \    'codeAction': {
-      \      'disableRuleComment': {
-      \        'enable': v:true,
-      \        'location': 'separateLine',
-      \      },
-      \      'showDocumentation': {
-      \        'enable': v:true,
-      \      },
-      \    },
-      \   }
-      \ },
-      \ #{
-      \   name: 'typescriptlang',
-      \   filetype: ['javascript', 'typescript', 'typescriptreact', 'javascriptreact'],
-      \   path: 'typescript-language-server',
-      \   args: ['--stdio']
-      \ },
-      \ #{
-      \   name: 'vim',
-      \   filetype: ['vim'],
-      \   path: 'vim-language-server',
-      \   args: ['--stdio'],
-      \ },
-      \ ]
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <silent> K :call CocActionAsync('doHover')<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust inoremap <silent> <leader>p :CocActionSync('showSignatureHelp')<CR>
 
-autocmd VimEnter * call LspAddServer(lspServers)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gd <Plug>(coc-definition)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gy <Plug>(coc-type-definition)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gi <Plug>(coc-implementation)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gr <Plug>(coc-references)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> [g <Plug>(coc-diagnostic-prev)
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nnoremap <space>D :LspDiag show<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> [g :LspDiag next<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> ]g :LspDiag prev<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-space> coc#refresh()
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-@> coc#refresh()
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nnoremap <space>a :LspCodeAction<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nnoremap <silent> K :LspHover<CR>
+autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
+autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.formatDocument')
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> gd :LspGotoDefinition<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> gy :LspGotoTypeDef<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> gi :LspGotoImpl<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go nmap <silent> gr :LspShowReferences<CR>
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
-autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx,*.go LspFormat
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                        \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" highlight CocHighlightText ctermfg=white ctermbg=gray
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
 vnoremap <Left> :<C-u>echo "No arrow for you!"<CR>
