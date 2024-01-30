@@ -3,6 +3,7 @@ if $VIM_PATH != ""
 endif
 
 set nocompatible
+set hidden
 
 set encoding=utf-8
 set fileformat=unix
@@ -11,7 +12,6 @@ set fileencoding=utf-8
 syntax enable
 filetype plugin indent on
 
-set background=dark
 set showmode
 set signcolumn=yes
 set number
@@ -20,12 +20,14 @@ set hlsearch
 set incsearch
 set cursorline
 set scrolloff=999
-set t_Co=256
 set title
 set textwidth=120
 set wildmode=list:longest,list:full
 set wildmenu
 set laststatus=2
+
+set spell
+set spelllang=en_us
 
 set history=1000
 set undolevels=1000
@@ -53,9 +55,14 @@ if &term =~ '256color'
   set t_ut=
 endif
 
+if exists('+termguicolors')
+  set t_Co=256
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set background=dark
+  set termguicolors
+endif
 
-let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
 let &t_ti = "\e[?1004h"
 let &t_te = "\e[?1004l"
 
@@ -65,22 +72,20 @@ call plug#begin()
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-" Plug 'prabirshrestha/vim-lsp'
-Plug 'puremourning/vimspector'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
 Plug 'ryanoasis/vim-devicons'
 Plug 'Yggdroot/indentLine'
 Plug 'sainnhe/sonokai'
+Plug 'morhetz/gruvbox'
 Plug 'wakatime/vim-wakatime'
 Plug 'github/copilot.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
-let g:sonokai_style = 'andromeda'
+let g:sonokai_style = 'espresso'
 let g:sonokai_enable_italic = 1
 colorscheme sonokai
 
@@ -97,7 +102,6 @@ let g:airline_right_sep=' '
 let g:indentLine_setColors = 0
 let g:indentLine_char = '│'
 let g:indentLine_setConceal = 0
-
 
 au FocusGained,BufEnter * :silent! !
 au FocusLost,WinLeave * :silent! wa
@@ -141,7 +145,7 @@ function! CheckBackspace() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" highlight CocHighlightText ctermfg=white ctermbg=gray
+highlight CocHighlightText ctermfg=white ctermbg=gray
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
 vnoremap <Left> :<C-u>echo "No arrow for you!"<CR>
