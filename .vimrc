@@ -133,8 +133,7 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,ru
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-space> coc#refresh()
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-@> coc#refresh()
 
-autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
-autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.formatDocument')
+autocmd BufWritePre *.tsx,*.ts,*.go :call CocAction('runCommand', 'editor.action.formatDocument')
 
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
