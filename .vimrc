@@ -25,6 +25,7 @@ set textwidth=120
 set wildmode=list:longest,list:full
 set wildmenu
 set laststatus=2
+set colorcolumn=99
 
 set spell
 set spelllang=en_us
