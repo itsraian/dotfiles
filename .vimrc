@@ -79,7 +79,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'ryanoasis/vim-devicons'
 Plug 'Yggdroot/indentLine'
 Plug 'sainnhe/sonokai'
-Plug 'sainnhe/everforest'
 Plug 'morhetz/gruvbox'
 Plug 'wakatime/vim-wakatime'
 Plug 'github/copilot.vim'
@@ -87,13 +86,9 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
-" let g:sonokai_style = 'espresso'
-" let g:sonokai_enable_italic = 1
-" colorscheme sonokai
-let g:everforest_background = 'hard'
-let g:everforest_better_performance = 1
-let g:everforest_enable_italic = 1
-colorscheme everforest
+let g:sonokai_style = 'espresso'
+let g:sonokai_enable_italic = 1
+colorscheme sonokai
 
 """ ==============
 """ Airline
@@ -104,7 +99,6 @@ let g:airline#extensions#tabline#formatter = 'jsformatter'
 let g:airline_powerline_fonts = 1
 let g:airline_left_sep=' '
 let g:airline_right_sep=' '
-let g:airline_theme = 'everforest'
 
 let g:indentLine_setColors = 0
 let g:indentLine_char = '│'
