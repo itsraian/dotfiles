@@ -10,7 +10,6 @@ cp ~/.alacritty.toml
 cp ~/.vim/coc-settings.json .
 cp ~/.config/helix/config.toml .
 cp ~/.config/helix/languages.toml .
-cp -r ~/tmux_scripts .
 
 git checkout main
 DATE=$(date +%m%d%Y)
