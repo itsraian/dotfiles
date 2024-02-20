@@ -109,6 +109,8 @@ let g:airline_theme = 'everforest'
 let g:indentLine_setColors = 0
 let g:indentLine_char = '│'
 let g:indentLine_setConceal = 0
+" let g:gitgutter_preview_win_floating = 1
+let g:gitgutter_use_location_list = 1
 
 au FocusGained,BufEnter * :silent! !
 au FocusLost,WinLeave * :silent! wa
@@ -176,7 +178,9 @@ let g:netrw_liststyle=3
 nnoremap <space>F :Files<CR>
 nnoremap <space>T :BTags<CR>
 vnoremap <space>Y "+y
-nnoremap <space>p "+p
+nnoremap <space>gp <Plug>(GitGutterPreviewHunk) 
+nnoremap <space>gu <Plug>(GitGutterUndoHunk)
+nnoremap <space>gf :GitGutterFold<CR>
 nnoremap <space>P "+P
 nnoremap <space>f :GFiles<CR>
 nnoremap <space>b :Buffers<CR>
