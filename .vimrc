@@ -108,7 +108,7 @@ let g:airline_theme = 'everforest'
 
 let g:indentLine_setColors = 0
 let g:indentLine_char = '│'
-let g:indentLine_setConceal = 0
+" let g:indentLine_setConceal = 0
 " let g:gitgutter_preview_win_floating = 1
 let g:gitgutter_use_location_list = 1
 
@@ -153,8 +153,6 @@ function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
-
-highlight CocHighlightText ctermfg=white ctermbg=gray
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
 vnoremap <Left> :<C-u>echo "No arrow for you!"<CR>
