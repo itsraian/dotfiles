@@ -67,8 +67,6 @@ endif
 let &t_ti = "\e[?1004h"
 let &t_te = "\e[?1004l"
 
-set runtimepath+=~/workspaces/vim-lsp
-
 call plug#begin()
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -78,18 +76,12 @@ Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 Plug 'ryanoasis/vim-devicons'
 Plug 'Yggdroot/indentLine'
-Plug 'sainnhe/sonokai'
 Plug 'sainnhe/everforest'
-Plug 'morhetz/gruvbox'
 Plug 'wakatime/vim-wakatime'
-Plug 'github/copilot.vim'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'npm ci'}
 
 call plug#end()
 
-" let g:sonokai_style = 'espresso'
-" let g:sonokai_enable_italic = 1
-" colorscheme sonokai
 let g:everforest_background = 'hard'
 let g:everforest_better_performance = 1
 let g:everforest_enable_italic = 1
@@ -108,7 +100,7 @@ let g:airline_theme = 'everforest'
 
 let g:indentLine_setColors = 0
 let g:indentLine_char = '│'
-let g:indentLine_setConceal = 0
+" let g:indentLine_setConceal = 0
 " let g:gitgutter_preview_win_floating = 1
 let g:gitgutter_use_location_list = 1
 
@@ -137,7 +129,6 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,ru
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-@> coc#refresh()
 
 autocmd BufWritePre *.tsx,*.ts,*.go :call CocAction('runCommand', 'editor.action.formatDocument')
-autocmd BufWritePre *.tsx,*.ts,*.go :call CocAction('runCommand', 'editor.action.organizeImport')
 
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
@@ -153,8 +144,6 @@ function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
-
-highlight CocHighlightText ctermfg=white ctermbg=gray
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
 vnoremap <Left> :<C-u>echo "No arrow for you!"<CR>
