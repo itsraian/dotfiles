@@ -33,6 +33,8 @@ set spelllang=en_us
 set history=1000
 set undolevels=1000
 
+set mouse=
+
 set wrap
 set tabstop=2
 set softtabstop=2
@@ -128,7 +130,8 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,ru
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-space> coc#refresh()
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-@> coc#refresh()
 
-autocmd BufWritePre *.tsx,*.ts,*.go :call CocAction('runCommand', 'editor.action.formatDocument')
+autocmd BufWritePre *.tsx,*.ts,*.go :silent call CocAction('runCommand', 'editor.action.formatDocument')
+autocmd BufWritePre *.tsx,*.ts,*.go :silent call CocAction('runCommand', 'editor.action.organizeImport')
 
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
