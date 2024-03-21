@@ -1,0 +1,5 @@
+snippet grpcmethod "Method GRPC" b
+func (s *sigCoreHandler) ${1:name}(ctx context.Context, req *pb.${2:name}Request) (*pb.${3:name}Response, error) {
+        ${0:${VISUAL}}
+}
+endsnippet
