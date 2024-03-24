@@ -9,9 +9,11 @@
     "variable": "var"
   },
   "colors.enable": true,
+  "coc.preferences.formatOnSave": true,
   "semanticTokens.enable": true,
   "diagnostic.virtualText": true,
   "diagnostic.virtualTextCurrentLineOnly": false,
+  "snippets.userSnippetsDirectory": "~/.raian/dotfiles/snippets/",
   "tsserver.experimental.enableProjectDiagnostics": true,
   "languageserver": {
     "golang": {
