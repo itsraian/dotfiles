@@ -37,3 +37,7 @@ export TMUX_STATUSTOP=true
  if [ -z "$TMUX" ]; then
    tmux attach-session || tmux new-session
  fi
+
+ export ENV=development
+
+ export EDITOR=vim
