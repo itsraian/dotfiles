@@ -1,4 +1,5 @@
 {
+  "coc.preferences.formatOnSave": true,
   "suggest.maxCompleteItemCount": 50,
   "suggest.completionItemKindLabels": {
     "text": "text",
@@ -16,20 +17,30 @@
   "languageserver": {
     "golang": {
       "command": "gopls",
-      "rootPatterns": ["go.mod"],
-      "filetypes": ["go"],
+      "rootPatterns": [
+        "go.mod"
+      ],
+      "filetypes": [
+        "go"
+      ],
       "initializationOptions": {
         "staticcheck": true
       }
     },
     "rust": {
       "command": "rust-analyzer",
-      "filetypes": ["rust"],
-      "rootPatterns": ["Cargo.toml"]
+      "filetypes": [
+        "rust"
+      ],
+      "rootPatterns": [
+        "Cargo.toml"
+      ]
     },
     "zig": {
       "command": "zls",
-      "filetypes": ["zig"]
+      "filetypes": [
+        "zig"
+      ]
     }
   }
 }

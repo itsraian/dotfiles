@@ -33,6 +33,8 @@ set spelllang=en_us
 set history=1000
 set undolevels=1000
 
+set mouse=
+
 set wrap
 set tabstop=2
 set softtabstop=2
@@ -79,6 +81,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'sainnhe/everforest'
 Plug 'wakatime/vim-wakatime'
 Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'npm ci'}
+Plug 'honza/vim-snippets'
 
 call plug#end()
 
@@ -104,12 +107,20 @@ let g:indentLine_char = '│'
 " let g:gitgutter_preview_win_floating = 1
 let g:gitgutter_use_location_list = 1
 
+if exists('$TMUX')
+  let g:fzf_layout = { 'tmux': '-p90%,60%' }
+else
+  let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+endif
+
 au FocusGained,BufEnter * :silent! !
 au FocusLost,WinLeave * :silent! wa
 
 """ =========================
 """ COC
 """ =========================
+
+let g:netrw_fastbrowse= 2
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <space>D :CocList diagnostics<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <space>a <Plug>(coc-codeaction-cursor)
@@ -128,9 +139,8 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,ru
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-space> coc#refresh()
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-@> coc#refresh()
 
-autocmd BufWritePre *.tsx,*.ts,*.go :call CocAction('runCommand', 'editor.action.formatDocument')
-
 autocmd CursorHold * silent call CocActionAsync('highlight')
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
 
 inoremap <silent><expr> <TAB>
       \ coc#pum#visible() ? coc#pum#next(1) :
@@ -139,6 +149,8 @@ inoremap <silent><expr> <TAB>
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
                         \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+imap <C-l> <Plug>(coc-snippets-expand)
 
 function! CheckBackspace() abort
   let col = col('.') - 1
