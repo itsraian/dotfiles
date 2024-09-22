@@ -194,12 +194,17 @@ var lspServers = [
       "command": ["golangci-lint", "run", "--enable-all", "--disable", "lll", "--out-format", "json", "--issues-exit-code=1"]
     }
   },
-  {
-    name: 'vimls',
-    filetype: ['vim'],
-    path: 'vim-language-server',
-    args: ['--stdio']
-  },
+#  {
+#    name: 'vimls',
+#    filetype: ['vim'],
+#    path: 'vim-language-server',
+#    args: ['--stdio'],
+#    initializationOptions: {
+#      "diagnostic": {
+#        "enable": v:false
+#      },
+#    }
+#  },
   {
     name: 'python',
     filetype: 'python',
@@ -239,8 +244,8 @@ var lspServers = [
 
 autocmd User LspSetup call LspAddServer(lspServers)
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nnoremap <space>D :LspDiag show<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nnoremap <space>a :LspCodeAction<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>D :LspDiag show<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>a :LspCodeAction<CR>
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> K :LspHover<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gs :LspShowSignature<CR>
