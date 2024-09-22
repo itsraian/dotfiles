@@ -186,6 +186,15 @@ var lspServers = [
     syncInit: v:true
   },
   {
+    name: 'golint-ci',
+    filetype: ['go'],
+    path: 'golangci-lint-langserver',
+    args: ['-debug'],
+    initializationOptions: {
+      "command": ["golangci-lint", "run", "--enable-all", "--disable", "lll", "--out-format", "json", "--issues-exit-code=1"]
+    }
+  },
+  {
     name: 'vimls',
     filetype: ['vim'],
     path: 'vim-language-server',
