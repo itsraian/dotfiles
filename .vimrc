@@ -1,5 +1,7 @@
+vim9script
+
 if $VIM_PATH != ""
-  let $PATH = $VIM_PATH
+  var $PATH = $VIM_PATH
 endif
 
 set nocompatible
@@ -58,19 +60,20 @@ endif
 
 if exists('+termguicolors')
   set t_Co=256
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set background=dark
   set termguicolors
 endif
 
-let &t_ti = "\e[?1004h"
-let &t_te = "\e[?1004l"
+&t_ti = "\e[?1004h"
+&t_te = "\e[?1004l"
 
 call plug#begin()
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'yegappan/lsp'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
@@ -78,72 +81,186 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'Yggdroot/indentLine'
 Plug 'sainnhe/everforest'
 Plug 'wakatime/vim-wakatime'
-Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'npm ci'}
+Plug 'github/copilot.vim'
+Plug 'prettier/vim-prettier'
 
 call plug#end()
 
-let g:everforest_background = 'hard'
-let g:everforest_better_performance = 1
-let g:everforest_enable_italic = 1
+g:everforest_background = 'hard'
+g:everforest_better_performance = 1
+g:everforest_enable_italic = 1
 colorscheme everforest
 
-""" ==============
-""" Airline
-""" ==============
+g:gitgutter_sign_priority = 1
 
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#formatter = 'jsformatter'
-let g:airline_powerline_fonts = 1
-let g:airline_left_sep=' '
-let g:airline_right_sep=' '
-let g:airline_theme = 'everforest'
+# ==============
+# Airline
+# ==============
 
-let g:indentLine_setColors = 0
-let g:indentLine_char = '│'
-" let g:indentLine_setConceal = 0
-" let g:gitgutter_preview_win_floating = 1
-let g:gitgutter_use_location_list = 1
+g:airline#extensions#tabline#enabled = 1
+g:airline#extensions#tabline#formatter = 'jsformatter'
+g:airline_powerline_fonts = 1
+g:airline_left_sep = ' '
+g:airline_right_sep = ' '
+g:airline_theme = 'everforest'
+
+g:indentLine_setColors = 1
+g:indentLine_char = '│'
+# var g:indentLine_setConceal = 0
+# var g:gitgutter_preview_win_floating = 1
+g:gitgutter_use_location_list = 1
 
 au FocusGained,BufEnter * :silent! !
 au FocusLost,WinLeave * :silent! wa
 
-""" =========================
-""" COC
-""" =========================
+# =============
+# LSP
+# =============
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <space>D :CocList diagnostics<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <space>a <Plug>(coc-codeaction-cursor)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <space>A <Plug>(coc-codeaction-line)
+var lspOpts = {
+  autoHighlightDiags: v:true, 
+  semanticHighlight: v:true, 
+  usePopupInCodeAction: v:true, 
+  showInlayHints: v:true, 
+  showDiagWithVirtualText: v:true,
+  diagVirtualTextAlign: 'after',
+  diagSignErrorText: '»',
+  diagSignInfoText: '»',
+  diagSignHintText: '»',
+  diagSignWarningText: '»',
+  noNewlineInCompletion: v:false
+}
+autocmd User LspSetup call LspOptionsSet(lspOpts)
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nnoremap <silent> K :call CocActionAsync('doHover')<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust inoremap <silent> <leader>p :CocActionSync('showSignatureHelp')<CR>
+var lspServers = [
+  {
+    name: 'eslint',
+    filetype: ['javascript', 'typescript', 'typescriptreact', 'javascriptreact'],
+    path: 'vscode-eslint-language-server',
+    args: ['--stdio'],
+    rootSearch: ['package.json'],
+    workspaceConfig: {
+    'validate': 'on',
+    'packageManager': v:null,
+    'useESLintClass': v:false,
+    'experimental': {
+    'useFlatConfig': v:false,
+    },
+    'codeActionOnSave': {'enable': v:false, 'mode': 'all' },
+    'format': v:true,
+    'quiet': v:false,
+    'onIgnoredFiles': 'off',
+    'rulesCustomizations': [],
+    'run': 'onType',
+    'problems': { 'shortenToSingleLine': v:false },
+    'nodePath': '',
+    'workingDirectory': {'mode': 'location'},
+    'workspaceFolder': {
+    },
+    'codeAction': {
+    'disableRuleComment': {
+    'enable': v:true,
+    'location': 'separateLine',
+    },
+    'showDocumentation': {
+    'enable': v:true,
+    },
+    },
+    }
+  },
+  {
+    name: 'typescriptlang',
+    filetype: ['javascript', 'typescript', 'typescriptreact', 'javascriptreact'],
+    path: 'typescript-language-server',
+    args: ['--stdio'],
+    syncInit: v:true
+  },
+  {
+    name: 'golang',
+    filetype: ['go', 'gomod'],
+    path: 'gopls',
+    args: ['serve'],
+    initializationOptions: {
+    'hints': {'parameterNames': v:false},
+    'semanticTokens': v:true,
+    'usePlaceholders': v:true,
+    },
+    syncInit: v:true
+  },
+  {
+    name: 'golint-ci',
+    filetype: ['go'],
+    path: 'golangci-lint-langserver',
+    args: ['-debug'],
+    initializationOptions: {
+      "command": ["golangci-lint", "run", "--enable-all", "--disable", "lll", "exportloopref", "--out-format", "json", "--issues-exit-code=1"]
+    }
+  },
+#  {
+#    name: 'vimls',
+#    filetype: ['vim'],
+#    path: 'vim-language-server',
+#    args: ['--stdio'],
+#    initializationOptions: {
+#      "diagnostic": {
+#        "enable": v:false
+#      },
+#    }
+#  },
+  {
+    name: 'python',
+    filetype: 'python',
+    path: 'pyright-langserver',
+    args: ['--stdio'],
+  },
+  {
+    name: 'sql',
+    filetype: 'sql',
+    path: 'sql-language-server',
+    args: ['up', '--method', 'stdio'],
+  },
+  {
+    name: 'terraform',
+    filetype: 'tf',
+    path: 'terraform-ls',
+    args: ['serve'],
+  },
+  {
+    name: 'yaml',
+    filetype: 'yaml',
+    path: 'yaml-language-server',
+    args: ['--stdio'],
+  },
+  {
+    name: 'docker',
+    filetype: 'dockerfile',
+    path: 'docker-langserver',
+    args: ['--stdio'],
+  },
+  {
+    name: 'ruff',
+    filetype: 'python',
+    path: 'ruff-lsp',
+  }
+]
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gd <Plug>(coc-definition)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gy <Plug>(coc-type-definition)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gi <Plug>(coc-implementation)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> gr <Plug>(coc-references)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> [g <Plug>(coc-diagnostic-prev)
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust nmap <silent> ]g <Plug>(coc-diagnostic-next)
+autocmd User LspSetup call LspAddServer(lspServers)
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-space> coc#refresh()
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust imap <silent><expr> <c-@> coc#refresh()
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>D :LspDiag show<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>a :LspCodeAction<CR>
 
-autocmd BufWritePre *.tsx,*.ts,*.go :call CocAction('runCommand', 'editor.action.formatDocument')
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> K :LspHover<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gs :LspShowSignature<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gd :LspGotoDefinition<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gy :LspGotoTypeDef<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gi :LspGotoImpl<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gr :LspShowReferences<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> [g :LspDiag prev<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> ]g :LspDiag next<CR>
 
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1) :
-      \ CheckBackspace() ? "\<Tab>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,zig,rust inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                        \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+autocmd BufWritePre *.go,*.py :LspFormat 
+autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx :LspFormat | :LspCodeAction /Organize | :PrettierAsync
+inoremap <Nul> <C-x><C-o>
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
 vnoremap <Left> :<C-u>echo "No arrow for you!"<CR>
@@ -161,8 +278,10 @@ nnoremap <Down> :echo "No arrow for you!"<CR>
 vnoremap <Down> :<C-u>echo "No arrow for you!"<CR>
 inoremap <Down> <C-o>:echo "No arrow for you!"<CR>
 
-let g:netrw_winsize=20
-let g:netrw_liststyle=3
+highlight link LspDiagVirtualTextError ErrorMsg
+
+g:netrw_winsize = 20
+g:netrw_liststyle = 3
 
 nnoremap <space>F :Files<CR>
 nnoremap <space>T :BTags<CR>
