@@ -123,10 +123,12 @@ var lspOpts = {
   usePopupInCodeAction: v:true, 
   showInlayHints: v:true, 
   showDiagWithVirtualText: v:true,
+  diagVirtualTextAlign: 'after',
   diagSignErrorText: '»',
   diagSignInfoText: '»',
   diagSignHintText: '»',
   diagSignWarningText: '»',
+  noNewlineInCompletion: v:false
 }
 autocmd User LspSetup call LspOptionsSet(lspOpts)
 
@@ -191,20 +193,9 @@ var lspServers = [
     path: 'golangci-lint-langserver',
     args: ['-debug'],
     initializationOptions: {
-      "command": ["golangci-lint", "run", "--enable-all", "--disable", "lll", "--out-format", "json", "--issues-exit-code=1"]
+      "command": ["golangci-lint", "run", "--enable-all", "--disable", "lll", "exportloopref", "--out-format", "json", "--issues-exit-code=1"]
     }
   },
-#  {
-#    name: 'vimls',
-#    filetype: ['vim'],
-#    path: 'vim-language-server',
-#    args: ['--stdio'],
-#    initializationOptions: {
-#      "diagnostic": {
-#        "enable": v:false
-#      },
-#    }
-#  },
   {
     name: 'python',
     filetype: 'python',
@@ -256,8 +247,9 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> [g :LspDiag prev<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> ]g :LspDiag next<CR>
 
-autocmd BufWritePre *.go,*.py :LspFormat | :LspCodeAction /Organize
-autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx :LspFormat | :LspCodeAction /Organize | :PrettierAsync
+autocmd BufWritePre *.go,*.py :LspFormat
+autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx :LspFormat |  :PrettierAsync
+inoremap <Nul> <C-x><C-o>
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
 vnoremap <Left> :<C-u>echo "No arrow for you!"<CR>
@@ -274,6 +266,8 @@ inoremap <Up> <C-o>:echo "No arrow for you!"<CR>
 nnoremap <Down> :echo "No arrow for you!"<CR>
 vnoremap <Down> :<C-u>echo "No arrow for you!"<CR>
 inoremap <Down> <C-o>:echo "No arrow for you!"<CR>
+
+highlight link LspDiagVirtualTextError ErrorMsg
 
 g:netrw_winsize = 20
 g:netrw_liststyle = 3
