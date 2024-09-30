@@ -247,7 +247,8 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> [g :LspDiag prev<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> ]g :LspDiag next<CR>
 
-autocmd BufWritePre *.go,*.py :LspFormat
+autocmd BufWritePre *.go,*.py :LspCodeAction /Organize | :LspFormat
+autocmd BufWritePre *.go,*.py,*.ts,*.tsx,*.js,*.jsx 
 autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx :LspFormat |  :PrettierAsync
 inoremap <Nul> <C-x><C-o>
 
