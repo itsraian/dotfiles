@@ -128,7 +128,7 @@ var lspOpts = {
   diagSignInfoText: '»',
   diagSignHintText: '»',
   diagSignWarningText: '»',
-  noNewlineInCompletion: v:false
+  noNewlineInCompletion: v:false,
 }
 autocmd User LspSetup call LspOptionsSet(lspOpts)
 
@@ -173,6 +173,12 @@ var lspServers = [
     filetype: ['javascript', 'typescript', 'typescriptreact', 'javascriptreact'],
     path: 'typescript-language-server',
     args: ['--stdio'],
+    workspaceConfig: {
+      "codeActionsOnSave": {
+        "source.organizeImports.ts": true,
+        "source.organizeImports": true,
+      }
+    },
     syncInit: v:true
   },
   {
@@ -233,6 +239,12 @@ var lspServers = [
   }
 ]
 
+def FormatCode()
+  :silent LspCodeAction /Organize
+  sleep 500m
+  :LspFormat
+enddef
+
 autocmd User LspSetup call LspAddServer(lspServers)
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>D :LspDiag show<CR>
@@ -247,8 +259,8 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> [g :LspDiag prev<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> ]g :LspDiag next<CR>
 
-autocmd BufWritePre *.go,*.py :LspFormat
-autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx :LspFormat |  :PrettierAsync
+autocmd BufWritePre *.go,*.py :call FormatCode()
+autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx :call FormatCode() |  :PrettierAsync
 inoremap <Nul> <C-x><C-o>
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
@@ -271,6 +283,7 @@ highlight link LspDiagVirtualTextError ErrorMsg
 
 g:netrw_winsize = 20
 g:netrw_liststyle = 3
+g:netrw_fastbrowse = 0
 
 nnoremap <space>F :Files<CR>
 nnoremap <space>T :BTags<CR>
