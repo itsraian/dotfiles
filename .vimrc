@@ -83,6 +83,7 @@ Plug 'sainnhe/everforest'
 Plug 'wakatime/vim-wakatime'
 Plug 'github/copilot.vim'
 Plug 'prettier/vim-prettier'
+Plug 'lsp/plugin/tsserver.vim'
 
 call plug#end()
 
@@ -106,7 +107,7 @@ g:airline_theme = 'everforest'
 
 g:indentLine_setColors = 1
 g:indentLine_char = '│'
-# var g:indentLine_setConceal = 0
+g:indentLine_setConceal = 0
 # var g:gitgutter_preview_win_floating = 1
 g:gitgutter_use_location_list = 1
 
@@ -128,11 +129,21 @@ var lspOpts = {
   diagSignInfoText: '»',
   diagSignHintText: '»',
   diagSignWarningText: '»',
-  noNewlineInCompletion: v:false
+  noNewlineInCompletion: v:false,
 }
 autocmd User LspSetup call LspOptionsSet(lspOpts)
 
 var lspServers = [
+  {
+    name: 'typescriptlang',
+    filetype: ['javascript', 'typescript', 'typescriptreact', 'javascriptreact'],
+    path: 'typescript-language-server',
+    args: ['--stdio'],
+    debug: true,
+    workspaceConfig: {
+    },
+    syncInit: v:true
+  },
   {
     name: 'eslint',
     filetype: ['javascript', 'typescript', 'typescriptreact', 'javascriptreact'],
@@ -167,13 +178,6 @@ var lspServers = [
     },
     },
     }
-  },
-  {
-    name: 'typescriptlang',
-    filetype: ['javascript', 'typescript', 'typescriptreact', 'javascriptreact'],
-    path: 'typescript-language-server',
-    args: ['--stdio'],
-    syncInit: v:true
   },
   {
     name: 'golang',
@@ -229,14 +233,25 @@ var lspServers = [
   {
     name: 'ruff',
     filetype: 'python',
-    path: 'ruff-lsp',
+    path: 'ruff',
+    args: ['server'],
   }
 ]
+
+
+def FormatCode()
+  :LspFormat
+  sleep 300m
+  :silent LspCodeAction /Organize
+enddef
+
+setlocal tagfunc=lsp#lsp#TagFunc
 
 autocmd User LspSetup call LspAddServer(lspServers)
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>D :LspDiag show<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>a :LspCodeAction<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>t :LspDocumentSymbol<CR>
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> K :LspHover<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gs :LspShowSignature<CR>
@@ -247,8 +262,8 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> [g :LspDiag prev<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> ]g :LspDiag next<CR>
 
-autocmd BufWritePre *.go,*.py :LspFormat
-autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx :LspFormat |  :PrettierAsync
+autocmd BufWritePre *.go,*.py :call FormatCode()
+autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx :call FormatCode() |  :PrettierAsync
 inoremap <Nul> <C-x><C-o>
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
@@ -271,6 +286,7 @@ highlight link LspDiagVirtualTextError ErrorMsg
 
 g:netrw_winsize = 20
 g:netrw_liststyle = 3
+g:netrw_fastbrowse = 0
 
 nnoremap <space>F :Files<CR>
 nnoremap <space>T :BTags<CR>
