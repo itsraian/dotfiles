@@ -73,7 +73,8 @@ call plug#begin()
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'yegappan/lsp'
+# Plug 'yegappan/lsp'
+Plug 'prabirshrestha/vim-lsp'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
@@ -117,138 +118,146 @@ au FocusLost,WinLeave * :silent! wa
 # LSP
 # =============
 
-var lspOpts = {
-  autoHighlightDiags: v:true, 
-  semanticHighlight: v:true, 
-  usePopupInCodeAction: v:true, 
-  showInlayHints: v:true, 
-  showDiagWithVirtualText: v:true,
-  diagVirtualTextAlign: 'after',
-  diagSignErrorText: '»',
-  diagSignInfoText: '»',
-  diagSignHintText: '»',
-  diagSignWarningText: '»',
-  noNewlineInCompletion: v:false
-}
-autocmd User LspSetup call LspOptionsSet(lspOpts)
+g:lsp_semantic_enabled = 1
+g:lsp_diagnostics_signs_error = {'text': '✘', 'texthl': 'ErrorMsg'}
+g:lsp_diagnostics_signs_warning = {'text': '⚠', 'texthl': 'WarningMsg'}
+g:lsp_diagnostics_signs_information = {'text': 'ℹ', 'texthl': 'InfoMsg'}
+g:lsp_diagnostics_signs_hint = {'text': '➤', 'texthl': 'MoreMsg'}
+g:lsp_document_code_action_signs_hint = {'text': '>'}
+g:lsp_document_code_action_signs_enabled = 0
+g:lsp_diagnostics_virtual_text_align = 'right'
+g:lsp_inlay_hints_enabled = 1
+g:lsp_use_native_client = 1
 
-var lspServers = [
-  {
-    name: 'eslint',
-    filetype: ['javascript', 'typescript', 'typescriptreact', 'javascriptreact'],
-    path: 'vscode-eslint-language-server',
-    args: ['--stdio'],
-    rootSearch: ['package.json'],
-    workspaceConfig: {
-    'validate': 'on',
-    'packageManager': v:null,
-    'useESLintClass': v:false,
-    'experimental': {
-    'useFlatConfig': v:false,
-    },
-    'codeActionOnSave': {'enable': v:false, 'mode': 'all' },
-    'format': v:true,
-    'quiet': v:false,
-    'onIgnoredFiles': 'off',
-    'rulesCustomizations': [],
-    'run': 'onType',
-    'problems': { 'shortenToSingleLine': v:false },
-    'nodePath': '',
-    'workingDirectory': {'mode': 'location'},
-    'workspaceFolder': {
-    },
-    'codeAction': {
-    'disableRuleComment': {
-    'enable': v:true,
-    'location': 'separateLine',
-    },
-    'showDocumentation': {
-    'enable': v:true,
-    },
-    },
-    }
-  },
-  {
-    name: 'typescriptlang',
-    filetype: ['javascript', 'typescript', 'typescriptreact', 'javascriptreact'],
-    path: 'typescript-language-server',
-    args: ['--stdio'],
-    syncInit: v:true
-  },
-  {
-    name: 'golang',
-    filetype: ['go', 'gomod'],
-    path: 'gopls',
-    args: ['serve'],
-    initializationOptions: {
-    'hints': {'parameterNames': v:false},
-    'semanticTokens': v:true,
-    'usePlaceholders': v:true,
-    },
-    syncInit: v:true
-  },
-  {
-    name: 'golint-ci',
-    filetype: ['go'],
-    path: 'golangci-lint-langserver',
-    args: ['-debug'],
-    initializationOptions: {
-      "command": ["golangci-lint", "run", "--enable-all", "--disable", "lll", "exportloopref", "--out-format", "json", "--issues-exit-code=1"]
-    }
-  },
-  {
-    name: 'python',
-    filetype: 'python',
-    path: 'pyright-langserver',
-    args: ['--stdio'],
-  },
-  {
-    name: 'sql',
-    filetype: 'sql',
-    path: 'sql-language-server',
-    args: ['up', '--method', 'stdio'],
-  },
-  {
-    name: 'terraform',
-    filetype: 'tf',
-    path: 'terraform-ls',
-    args: ['serve'],
-  },
-  {
-    name: 'yaml',
-    filetype: 'yaml',
-    path: 'yaml-language-server',
-    args: ['--stdio'],
-  },
-  {
-    name: 'docker',
-    filetype: 'dockerfile',
-    path: 'docker-langserver',
-    args: ['--stdio'],
-  },
-  {
-    name: 'ruff',
-    filetype: 'python',
-    path: 'ruff-lsp',
-  }
-]
+if executable('typescript-language-server')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'tsserver',
+        \ 'cmd': ['typescript-language-server', '--stdio'],
+        \ 'allowlist': ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
+        \ 'workspace_config': {
+        \ 'hints': {'parameterNames': v:false},
+        \ 'semanticTokens': v:true,
+        \ 'usePlaceholders': v:true,
+        \ }
+        \ })
+endif
 
-autocmd User LspSetup call LspAddServer(lspServers)
+if executable('gopls')
+    var gopls = {
+         name: 'gopls',
+         cmd: ['gopls', 'serve'],
+         allowlist: ['go', 'gomod'],
+         }
+    au User lsp_setup call lsp#register_server(gopls)
+endif
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>D :LspDiag show<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>a :LspCodeAction<CR>
+if executable('vscode-eslint-language-server')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'vscode-eslint-language-server',
+        \ 'cmd': ['vscode-eslint-language-server', '--stdio'],
+        \ 'allowlist': ['javascript', 'javascriptreact', 'typescript', 'typescriptreact'],
+        \ 'workspace_config': {
+          \ 'validate': 'on',
+          \ 'packageManager': v:null,
+          \ 'useESLintClass': v:false,
+          \ 'experimental': {'useFlatConfig': v:false},
+          \ 'codeActionOnSave': {'enable': v:false, 'mode': 'all' },
+          \ 'format': v:true,
+          \ 'quiet': v:false,
+          \ 'onIgnoredFiles': 'off',
+          \ 'rulesCustomizations': [],
+          \ 'run': 'onType',
+          \ 'problems': { 'shortenToSingleLine': v:false },
+          \ 'nodePath': '',
+          \ 'workingDirectory': {'mode': 'location'},
+          \ 'workspaceFolder': { },
+          \ 'codeAction': {
+          \ 'disableRuleComment': {
+          \ 'enable': v:true,
+          \ 'location': 'separateLine',
+          \ },
+          \ 'showDocumentation': { 'enable': v:true },
+          \ },
+        \ }
+        \ })
+endif
 
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> K :LspHover<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gs :LspShowSignature<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gd :LspGotoDefinition<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gy :LspGotoTypeDef<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gi :LspGotoImpl<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gr :LspShowReferences<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> [g :LspDiag prev<CR>
-autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> ]g :LspDiag next<CR>
+if executable('ruff')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'ruff',
+        \ 'cmd': ['ruff', 'server'],
+        \ 'allowlist': ['python']
+        \ })
+endif
 
-autocmd BufWritePre *.go,*.py :LspFormat
-autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx :LspFormat |  :PrettierAsync
+if executable('sql-language-server')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'sql',
+        \ 'cmd': ['sql-language-server', 'up', '--method', 'stdio'],
+        \ 'allowlist': ['sql']
+        \ })
+endif
+
+if executable('terraform-ls')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'terraform-ls',
+        \ 'cmd': ['terraform-ls', 'serve'],
+        \ 'allowlist': ['tf']
+        \ })
+endif
+
+if executable('yaml-language-server')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'yaml',
+        \ 'cmd': ['yaml-language-server', '--stdio'],
+        \ 'allowlist': ['yaml']
+        \ })
+endif
+
+if executable('docker-langserver')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'docker',
+        \ 'cmd': ['docker-langserver', '--stdio'],
+        \ 'allowlist': ['dockerfile']
+        \ })
+endif
+
+if executable('pyright-langserver')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'python',
+        \ 'cmd': ['pyright-langserver', '--stdio'],
+        \ 'allowlist': ['python'],
+        \ 'workspace_config': {
+          \ 'pyright': {},
+          \ 'python': {
+            \ 'analysis': {
+              \ 'typeCheckingMode': 'standard'
+            \ }
+          \ }
+        \ }
+        \ })
+endif
+
+
+def FormatCode()
+  :silent LspDocumentFormatSync
+enddef
+
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>D :LspDocumentDiagnostics<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>a :LspCodeAction --ui=float<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim nnoremap <space>t :LspDocumentSymbol<CR>
+
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> K :LspHover --ui=float<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gs :LspSignatureHelp<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gd :LspDefinition<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gy :LspTypeDefinition<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gi :LspImplementation<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> gr :LspReferences<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> [g :LspPreviousDiagnostic<CR>
+autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python nmap <silent> ]g :LspNextDiagnostic<CR>
+
+autocmd BufWritePre *.go,*.py :call FormatCode()
+autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx :call FormatCode() |  :PrettierAsync
 inoremap <Nul> <C-x><C-o>
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
@@ -267,10 +276,9 @@ nnoremap <Down> :echo "No arrow for you!"<CR>
 vnoremap <Down> :<C-u>echo "No arrow for you!"<CR>
 inoremap <Down> <C-o>:echo "No arrow for you!"<CR>
 
-highlight link LspDiagVirtualTextError ErrorMsg
-
 g:netrw_winsize = 20
 g:netrw_liststyle = 3
+g:netrw_fastbrowse = 0
 
 nnoremap <space>F :Files<CR>
 nnoremap <space>T :BTags<CR>
