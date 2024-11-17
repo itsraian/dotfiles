@@ -1,3 +1,5 @@
+# Add deno completions to search path
+if [[ ":$FPATH:" != *":/Users/raian/.zsh/completions:"* ]]; then export FPATH="/Users/raian/.zsh/completions:$FPATH"; fi
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -37,3 +39,13 @@ export TMUX_STATUSTOP=true
  if [ -z "$TMUX" ]; then
    tmux attach-session || tmux new-session
  fi
+
+ export ENV=development
+
+ export EDITOR=vim
+. "/Users/raian/.deno/env"
+# Initialize zsh completions (added by deno install script)
+autoload -Uz compinit
+compinit
+
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
