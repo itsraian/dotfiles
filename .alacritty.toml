@@ -23,7 +23,7 @@ background = "#272e33"
 foreground = "#d3c6aa"
 
 [font]
-size = 15.0
+size = 14
 
 [font.bold]
 family = "JetBrainsMono Nerd Font"
@@ -57,3 +57,9 @@ y = 5
 [window.position]
 x = 500
 y = 250
+
+[keyboard]
+bindings = [
+  { key = "Right", mods = "Alt", chars = "\u001BF" },
+  { key = "Left",  mods = "Alt", chars = "\u001BB" },
+]
