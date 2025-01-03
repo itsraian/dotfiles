@@ -32,8 +32,11 @@ set colorcolumn=99
 set spell
 set spelllang=en_us
 
-set history=1000
+set undofile
+set undodir=$HOME/.vim/undo
 set undolevels=1000
+set undoreload=10000
+set history=1000
 
 set wrap
 set tabstop=2
@@ -84,7 +87,6 @@ Plug 'Yggdroot/indentLine'
 Plug 'sainnhe/everforest'
 Plug 'wakatime/vim-wakatime'
 Plug 'github/copilot.vim'
-Plug 'prettier/vim-prettier'
 Plug 'preservim/nerdtree', { 'tag': '7.1.2' }
 
 call plug#end()
@@ -109,9 +111,11 @@ g:airline_theme = 'everforest'
 
 g:indentLine_setColors = 1
 g:indentLine_char = '│'
-g:indentLine_setConceal = 0
+g:indentLine_setConceal = 1
 # var g:gitgutter_preview_win_floating = 1
 g:gitgutter_use_location_list = 1
+g:asyncomplete_min_chars = 2
+g:asyncomplete_matchfuzzy = 0
 
 au FocusGained,BufEnter * :silent! !
 au FocusLost,WinLeave * :silent! wa
@@ -124,7 +128,6 @@ g:NERDTreeShowHidden = 1
 # LSP
 # =============
 
-g:lsp_log_file = '/tmp/lsp.log'
 g:lsp_semantic_enabled = 1
 g:lsp_diagnostics_signs_error = {'text': '✘', 'texthl': 'ErrorMsg'}
 g:lsp_diagnostics_signs_warning = {'text': '⚠', 'texthl': 'WarningMsg'}
@@ -136,11 +139,12 @@ g:lsp_diagnostics_virtual_text_align = 'right'
 g:lsp_inlay_hints_enabled = 1
 g:lsp_use_native_client = 1
 
+
 if executable('typescript-language-server')
     au User lsp_setup call lsp#register_server({
         \ 'name': 'tsserver',
         \ 'cmd': ['typescript-language-server', '--stdio'],
-        \ 'allowlist': ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
+        \ 'allowlist': ['typescript', 'javascriptreact', 'typescriptreact'],
         \ 'initialization_options': {
         \ 'semanticTokens': v:true,
         \ 'usePlaceholders': v:true,
@@ -157,6 +161,10 @@ def GetCurrentTSPath(): any
         \ }
 enddef
 
+def GetCurrentEsLintPath(): any
+  return '/Users/raian/workspaces/vezu-saas/frontend/'
+enddef
+
 if executable('vue-language-server')
     au User lsp_setup call lsp#register_server({
         \ 'name': 'vue-language-server',
@@ -166,7 +174,7 @@ if executable('vue-language-server')
         \     'typescript': GetCurrentTSPath(),
         \     'vue': {
         \       'hybridMode': v:false
-        \     },
+        \     }
         \ },
         \ })
 endif
@@ -174,40 +182,17 @@ endif
 if executable('gopls')
     au User lsp_setup call lsp#register_server({
         \ 'name': 'gopls',
-        \ 'cmd': ['gopls', 'serve'],
+        \ 'cmd': ['gopls'],
         \ 'allowlist': ['go', 'gomod'],
         \ })
 endif
 
-if executable('vscode-eslint-language-server')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'vscode-eslint-language-server',
-        \ 'cmd': ['vscode-eslint-language-server', '--stdio'],
-        \ 'allowlist': ['javascript', 'javascriptreact', 'typescript', 'typescriptreact'],
-        \ 'workspace_config': {
-          \ 'validate': 'on',
-          \ 'packageManager': v:null,
-          \ 'useESLintClass': v:false,
-          \ 'experimental': {'useFlatConfig': v:false},
-          \ 'codeActionOnSave': {'enable': v:false, 'mode': 'all' },
-          \ 'format': v:true,
-          \ 'quiet': v:false,
-          \ 'onIgnoredFiles': 'off',
-          \ 'rulesCustomizations': [],
-          \ 'run': 'onType',
-          \ 'problems': { 'shortenToSingleLine': v:false },
-          \ 'nodePath': '',
-          \ 'workingDirectory': {'mode': 'location'},
-          \ 'workspaceFolder': { },
-          \ 'codeAction': {
-          \ 'disableRuleComment': {
-          \ 'enable': v:true,
-          \ 'location': 'separateLine',
-          \ },
-          \ 'showDocumentation': { 'enable': v:true },
-          \ },
-        \ }
-        \ })
+if executable('efm-langserver')
+  autocmd User lsp_setup call lsp#register_server({
+      \ 'name': 'efm-langserver',
+      \ 'cmd': ['efm-langserver', '-c', expand('~/.config/efm-langserver/config.yaml')],
+      \ 'allowlist': ['vim', 'markdown', 'yaml', 'javascript', 'vue', 'typescript']
+      \ })
 endif
 
 if executable('ruff')
@@ -215,30 +200,6 @@ if executable('ruff')
         \ 'name': 'ruff',
         \ 'cmd': ['ruff', 'server'],
         \ 'allowlist': ['python']
-        \ })
-endif
-
-if executable('terraform-ls')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'terraform-ls',
-        \ 'cmd': ['terraform-ls', 'serve'],
-        \ 'allowlist': ['tf']
-        \ })
-endif
-
-if executable('yaml-language-server')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'yaml',
-        \ 'cmd': ['yaml-language-server', '--stdio'],
-        \ 'allowlist': ['yaml']
-        \ })
-endif
-
-if executable('docker-langserver')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'docker',
-        \ 'cmd': ['docker-langserver', '--stdio'],
-        \ 'allowlist': ['dockerfile']
         \ })
 endif
 
@@ -259,9 +220,13 @@ if executable('pyright-langserver')
 endif
 
 
-def FormatCode()
+def FormatBECode()
   :silent LspDocumentFormatSync
-  :silent LspCodeActionSync source.organizeImports
+  :silent LspCodeActionSync --ui=float source.organizeImports
+enddef
+
+def FormatWebCode()
+  :silent LspDocumentFormatSync
 enddef
 
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vim,vue nnoremap <space>D :LspDocumentDiagnostics<CR>
@@ -277,9 +242,14 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vue nmap <silent> [g :LspPreviousDiagnostic<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vue nmap <silent> ]g :LspNextDiagnostic<CR>
 
-autocmd BufWritePre *.go,*.py :call FormatCode()
-autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx,*.vue :call FormatCode() |  :PrettierAsync
+autocmd BufWritePre *.go,*.py :call FormatBECode()
+autocmd BufWritePre *.js,*.ts,*.vue,*.tsx,*.jsx :call FormatWebCode()
+
 inoremap <Nul> <C-x><C-o>
+inoremap <expr> <CR> pumvisible() ? asyncomplete#close_popup() : "\<C-g>u\<CR>"
+
+hi TrailingWhitespace ctermbg=DarkRed guibg=DarkRed
+call matchadd("TrailingWhitespace", '\v\s+$')
 
 nnoremap <Left> :echo "No arrow for you!"<CR>
 vnoremap <Left> :<C-u>echo "No arrow for you!"<CR>
@@ -300,7 +270,7 @@ inoremap <Down> <C-o>:echo "No arrow for you!"<CR>
 nnoremap <space>F :Files<CR>
 nnoremap <space>T :BTags<CR>
 vnoremap <space>Y "+y
-nnoremap <space>gp <Plug>(GitGutterPreviewHunk) 
+nnoremap <space>gp <Plug>(GitGutterPreviewHunk)
 nnoremap <space>gu <Plug>(GitGutterUndoHunk)
 nnoremap <space>gf :GitGutterFold<CR>
 nnoremap <space>P "+P
