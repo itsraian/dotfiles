@@ -83,7 +83,6 @@ Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 Plug 'ryanoasis/vim-devicons'
-Plug 'Yggdroot/indentLine'
 Plug 'sainnhe/everforest'
 Plug 'wakatime/vim-wakatime'
 Plug 'github/copilot.vim'
@@ -108,14 +107,13 @@ g:airline_powerline_fonts = 1
 g:airline_left_sep = ' '
 g:airline_right_sep = ' '
 g:airline_theme = 'everforest'
+g:airline#extensions#whitespace#checks = [ 'conflicts' ]
 
 g:indentLine_setColors = 1
 g:indentLine_char = '│'
-g:indentLine_setConceal = 1
-# var g:gitgutter_preview_win_floating = 1
 g:gitgutter_use_location_list = 1
-g:asyncomplete_min_chars = 2
 g:asyncomplete_matchfuzzy = 0
+g:asyncomplete_min_chars = 1
 
 au FocusGained,BufEnter * :silent! !
 au FocusLost,WinLeave * :silent! wa
@@ -138,16 +136,20 @@ g:lsp_document_code_action_signs_enabled = 0
 g:lsp_diagnostics_virtual_text_align = 'right'
 g:lsp_inlay_hints_enabled = 1
 g:lsp_use_native_client = 1
-
+#g:lsp_log_verbose = 1
+#g:lsp_log_file = '/tmp/lsp.log'
 
 if executable('typescript-language-server')
     au User lsp_setup call lsp#register_server({
         \ 'name': 'tsserver',
         \ 'cmd': ['typescript-language-server', '--stdio'],
-        \ 'allowlist': ['typescript', 'javascriptreact', 'typescriptreact'],
+        \ 'allowlist': ['vue', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
         \ 'initialization_options': {
         \ 'semanticTokens': v:true,
         \ 'usePlaceholders': v:true,
+        \ plugins: [
+        \   {'name': '@vue/typescript-plugin', 'location': '/opt/homebrew/bin/vue-language-server', 'languages': ['vue']}  
+        \ ]
         \ }
         \ })
 endif
@@ -161,10 +163,6 @@ def GetCurrentTSPath(): any
         \ }
 enddef
 
-def GetCurrentEsLintPath(): any
-  return '/Users/raian/workspaces/vezu-saas/frontend/'
-enddef
-
 if executable('vue-language-server')
     au User lsp_setup call lsp#register_server({
         \ 'name': 'vue-language-server',
@@ -173,7 +171,7 @@ if executable('vue-language-server')
         \ 'initialization_options': {
         \     'typescript': GetCurrentTSPath(),
         \     'vue': {
-        \       'hybridMode': v:false
+        \       'hybridMode': v:true
         \     }
         \ },
         \ })
@@ -191,7 +189,7 @@ if executable('efm-langserver')
   autocmd User lsp_setup call lsp#register_server({
       \ 'name': 'efm-langserver',
       \ 'cmd': ['efm-langserver', '-c', expand('~/.config/efm-langserver/config.yaml')],
-      \ 'allowlist': ['vim', 'markdown', 'yaml', 'javascript', 'vue', 'typescript']
+      \ 'allowlist': ['vim', 'markdown', 'yaml', 'javascript', 'typescript', 'vue']
       \ })
 endif
 
@@ -246,26 +244,27 @@ autocmd BufWritePre *.go,*.py :call FormatBECode()
 autocmd BufWritePre *.js,*.ts,*.vue,*.tsx,*.jsx :call FormatWebCode()
 
 inoremap <Nul> <C-x><C-o>
+
 inoremap <expr> <CR> pumvisible() ? asyncomplete#close_popup() : "\<C-g>u\<CR>"
+inoremap <expr> <ESC> pumvisible() ? asyncomplete#close_popup() : "\<C-g>u\<ESC>"
+imap <c-space> <Plug>(asyncomplete_force_refresh)
+imap <c-@> <Plug>(asyncomplete_force_refresh)
 
-hi TrailingWhitespace ctermbg=DarkRed guibg=DarkRed
-call matchadd("TrailingWhitespace", '\v\s+$')
+nnoremap <Left> <Nop>
+vnoremap <Left> <Nop>
+inoremap <Left> <Nop>
 
-nnoremap <Left> :echo "No arrow for you!"<CR>
-vnoremap <Left> :<C-u>echo "No arrow for you!"<CR>
-inoremap <Left> <C-o>:echo "No arrow for you!"<CR>
+nnoremap <Right> <Nop>
+vnoremap <Right> <Nop>
+inoremap <Right> <Nop>
 
-nnoremap <Right> :echo "No arrow for you!"<CR>
-vnoremap <Right> :<C-u>echo "No arrow for you!"<CR>
-inoremap <Right> <C-o>:echo "No arrow for you!"<CR>
+nnoremap <Up> <Nop>
+vnoremap <Up> <Nop>
+inoremap <Up> <Nop>
 
-nnoremap <Up> :echo "No arrow for you!"<CR>
-vnoremap <Up> :<C-u>echo "No arrow for you!"<CR>
-inoremap <Up> <C-o>:echo "No arrow for you!"<CR>
-
-nnoremap <Down> :echo "No arrow for you!"<CR>
-vnoremap <Down> :<C-u>echo "No arrow for you!"<CR>
-inoremap <Down> <C-o>:echo "No arrow for you!"<CR>
+nnoremap <Down> <Nop>
+vnoremap <Down> <Nop>
+inoremap <Down> <Nop>
 
 nnoremap <space>F :Files<CR>
 nnoremap <space>T :BTags<CR>
