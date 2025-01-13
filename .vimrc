@@ -189,7 +189,7 @@ if executable('efm-langserver')
   autocmd User lsp_setup call lsp#register_server({
       \ 'name': 'efm-langserver',
       \ 'cmd': ['efm-langserver', '-c', expand('~/.config/efm-langserver/config.yaml')],
-      \ 'allowlist': ['vim', 'markdown', 'yaml', 'javascript', 'typescript', 'vue']
+      \ 'allowlist': ['vim', 'markdown', 'yaml', 'javascript', 'typescript', 'vue', 'sh']
       \ })
 endif
 
