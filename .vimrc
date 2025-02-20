@@ -30,7 +30,7 @@ set laststatus=2
 set colorcolumn=99
 
 set spell
-set spelllang=en_us
+set spelllang+=en
 
 set undofile
 set undodir=$HOME/.vim/undo
@@ -86,7 +86,11 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'sainnhe/everforest'
 Plug 'wakatime/vim-wakatime'
 Plug 'github/copilot.vim'
-Plug 'preservim/nerdtree', { 'tag': '7.1.2' }
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+Plug "rafamadriz/friendly-snippets"
+Plug 'puremourning/vimspector'
+Plug 'preservim/nerdtree'
 
 call plug#end()
 
@@ -139,57 +143,84 @@ g:lsp_use_native_client = 1
 #g:lsp_log_verbose = 1
 #g:lsp_log_file = '/tmp/lsp.log'
 
-if executable('typescript-language-server')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'tsserver',
-        \ 'cmd': ['typescript-language-server', '--stdio'],
-        \ 'allowlist': ['vue', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
-        \ 'initialization_options': {
-        \ 'semanticTokens': v:true,
-        \ 'usePlaceholders': v:true,
-        \ plugins: [
-        \   {'name': '@vue/typescript-plugin', 'location': '/opt/homebrew/bin/vue-language-server', 'languages': ['vue']}  
-        \ ]
-        \ }
-        \ })
-endif
 
 def GetCurrentTSPath(): any
   var ts_path = '/node_modules/typescript/lib'
   var project_dir = '/opt/homebrew/lib'
   var tsserverlibrary_path = project_dir .. ts_path
-  return {
-        \   'tsdk': tsserverlibrary_path,
-        \ }
+  return { 'tsdk': tsserverlibrary_path }
 enddef
+
+def GetWorkspaceRoot(fallback: string): any
+  var cwd = getcwd()
+  var root = cwd
+  if isdirectory(cwd .. fallback)
+    return 'file://' .. cwd .. fallback
+  endif
+
+  return 'file://' .. root
+enddef
+
+def GetRootUri(fallback: string): any
+  return (server_info: any) => {
+    return GetWorkspaceRoot(fallback)
+  }
+enddef
+
+if executable('typescript-language-server')
+    au User lsp_setup call lsp#register_server({
+      \ 'name': 'tsserver',
+      \ 'root_uri': GetRootUri('/frontend'),
+      \ 'cmd': ['typescript-language-server', '--stdio'],
+      \ 'allowlist': ['vue', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
+      \ 'initialization_options': {
+      \   'semanticTokens': v:true,
+      \   'usePlaceholders': v:true,
+      \   plugins: [
+      \     {'name': '@vue/typescript-plugin', 'location': '/opt/homebrew/bin/vue-language-server', 'languages': ['vue']}
+      \   ]
+      \ }
+      \})
+endif
 
 if executable('vue-language-server')
     au User lsp_setup call lsp#register_server({
-        \ 'name': 'vue-language-server',
-        \ 'cmd': ['vue-language-server', '--stdio'],
-        \ 'allowlist': ['vue'],
-        \ 'initialization_options': {
-        \     'typescript': GetCurrentTSPath(),
-        \     'vue': {
-        \       'hybridMode': v:true
-        \     }
-        \ },
-        \ })
+      \ 'name': 'vue-language-server',
+      \ 'root_uri': GetRootUri('/frontend'),
+      \ 'cmd': ['vue-language-server', '--stdio'],
+      \ 'allowlist': ['vue'],
+      \ 'initialization_options': {
+      \     'typescript': GetCurrentTSPath(),
+      \     'vue': {
+      \       'hybridMode': v:true
+      \     }
+      \ }
+      \})
 endif
 
 if executable('gopls')
     au User lsp_setup call lsp#register_server({
-        \ 'name': 'gopls',
-        \ 'cmd': ['gopls'],
-        \ 'allowlist': ['go', 'gomod'],
-        \ })
+      \ 'name': 'gopls',
+      \ 'root_uri': GetRootUri('/backend'),
+      \ 'cmd': ['gopls'],
+      \ 'allowlist': ['go', 'gomod']
+      \ })
 endif
 
 if executable('efm-langserver')
   autocmd User lsp_setup call lsp#register_server({
       \ 'name': 'efm-langserver',
+      \ 'root_uri': GetRootUri('/backend'),
       \ 'cmd': ['efm-langserver', '-c', expand('~/.config/efm-langserver/config.yaml')],
-      \ 'allowlist': ['vim', 'markdown', 'yaml', 'javascript', 'typescript', 'vue', 'sh']
+      \ 'allowlist': ['vim', 'markdown', 'yaml', 'javascript', 'typescript', 'vue', 'sh', 'go']
+      \ })
+endif
+
+if executable('erlang_ls')
+  autocmd User lsp_setup call lsp#register_server({
+      \ 'name': 'erlang',
+      \ 'cmd': ['erlang_ls'],
+      \ 'allowlist': ['erlang']
       \ })
 endif
 
@@ -240,8 +271,23 @@ autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vue nmap <silent> [g :LspPreviousDiagnostic<CR>
 autocmd FileType javascript,typescript,javascriptreact,typescriptreact,go,python,vue nmap <silent> ]g :LspNextDiagnostic<CR>
 
+nnoremap <space>dd :call vimspector#Launch()<CR>
+nnoremap <space>de :call vimspector#Reset()<CR>
+nnoremap <space>dc :call vimspector#Continue()<CR>
+
+nnoremap <space>dt :call vimspector#ToggleBreakpoint()<CR>
+nnoremap <space>dT :call vimspector#ClearBreakpoints()<CR>
+
+nmap <space>dk <Plug>VimspectorRestart
+nmap <space>dh <Plug>VimspectorStepOut
+nmap <space>dl <Plug>VimspectorStepInto
+nmap <space>dj <Plug>VimspectorStepOver
+
 autocmd BufWritePre *.go,*.py :call FormatBECode()
 autocmd BufWritePre *.js,*.ts,*.vue,*.tsx,*.jsx :call FormatWebCode()
+
+hi TrailingWhitespace ctermbg=DarkRed guibg=DarkRed
+call matchadd("TrailingWhitespace", '\v\s+$')
 
 inoremap <Nul> <C-x><C-o>
 
@@ -278,7 +324,7 @@ nnoremap <space>b :Buffers<CR>
 nnoremap <space>/ :Rg<CR>
 nnoremap <space>E :NERDTreeToggleVCS<CR>
 nnoremap <space>e :NERDTreeToggle<CR>
-nnoremap <space>n :set number! <bar> IndentLinesToggle<CR>
+nnoremap <space>n :set number! <bar> GitGutterSignsToggle<CR>
 
 nnoremap <space>1 :e $MYVIMRC<CR>
 nnoremap <space>2 :source $MYVIMRC<CR>

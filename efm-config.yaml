@@ -1,7 +1,12 @@
 ---
 
 version: 2
+log-file: /tmp/efm.log
+log-level: 10
 root-markers:
+  - go.mod
+  - go.sum
+  - package.json
   - .git/
 lint-debounce: 100ms
 
@@ -26,6 +31,14 @@ tools:
       - '%l: %m: "%r"'
       - '%l: %m'
 
+  golangci-lint: &golangci-lint
+    lint-command: 'golangci-lint run --fast --fix'
+    lint-ignore-exit-code: true
+    lint-stdin: true
+    lint-after-open: true
+    lint-workspace: true
+    fotmat-stdin: true
+
   html-prettier: &html-prettier
     format-command: >
       ./node_modules/.bin/prettier ${--tab-width:tabWidth}
@@ -33,7 +46,9 @@ tools:
     lint-after-open: true
 
   javascript-eslint: &javascript-eslint
-    lint-command: 'eslint -f visualstudio --stdin --stdin-filename ${INPUT}'
+    lint-command: >
+      ./frontend/node_modules/.bin/eslint -f
+      visualstudio --stdin --stdin-filename ${INPUT}
     lint-ignore-exit-code: true
     lint-stdin: true
     lint-after-open: true
@@ -115,6 +130,9 @@ languages:
 
   gitcommit:
     - <<: *gitcommit-gitlint
+
+  go:
+    - <<: *golangci-lint
 
   html:
     - <<: *html-prettier
