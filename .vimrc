@@ -170,8 +170,8 @@ enddef
 if executable('typescript-language-server')
     au User lsp_setup call lsp#register_server({
       \ 'name': 'tsserver',
-      \ 'root_uri': GetRootUri('/frontend'),
       \ 'cmd': ['typescript-language-server', '--stdio'],
+      \ 'root_uri': GetRootUri('/frontend'),
       \ 'allowlist': ['vue', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
       \ 'initialization_options': {
       \   'semanticTokens': v:true,
@@ -186,8 +186,8 @@ endif
 if executable('vue-language-server')
     au User lsp_setup call lsp#register_server({
       \ 'name': 'vue-language-server',
-      \ 'root_uri': GetRootUri('/frontend'),
       \ 'cmd': ['vue-language-server', '--stdio'],
+      \ 'root_uri': GetRootUri('/frontend'),
       \ 'allowlist': ['vue'],
       \ 'initialization_options': {
       \     'typescript': GetCurrentTSPath(),
