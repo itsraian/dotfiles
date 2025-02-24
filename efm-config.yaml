@@ -8,7 +8,7 @@ root-markers:
   - go.sum
   - package.json
   - .git/
-lint-debounce: 100ms
+lint-debounce: 50ms
 
 tools:
   css-prettier: &css-prettier
@@ -31,13 +31,16 @@ tools:
       - '%l: %m: "%r"'
       - '%l: %m'
 
+  goimports: &goimports
+    format-command: "goimports"
+    format-stdin: true
+
   golangci-lint: &golangci-lint
-    lint-command: 'golangci-lint run --fast --fix'
+    lint-command: 'golangci-lint run'
     lint-ignore-exit-code: true
     lint-stdin: true
     lint-after-open: true
     lint-workspace: true
-    fotmat-stdin: true
 
   html-prettier: &html-prettier
     format-command: >
@@ -133,6 +136,7 @@ languages:
 
   go:
     - <<: *golangci-lint
+    - <<: *goimports
 
   html:
     - <<: *html-prettier
