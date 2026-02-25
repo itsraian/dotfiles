@@ -23,22 +23,22 @@ background = "#272e33"
 foreground = "#d3c6aa"
 
 [font]
-size = 14
+size = 13
 
 [font.bold]
-family = "JetBrainsMono Nerd Font"
+family = "BlexMono Nerd Font Mono"
 style = "Bold"
 
 [font.bold_italic]
-family = "JetBrainsMono Nerd Font"
+family = "BlexMono Nerd Font Mono"
 style = "Bold Italic"
 
 [font.italic]
-family = "JetBrainsMono Nerd Font"
+family = "BlexMono Nerd Font Mono"
 style = "Italic"
 
 [font.normal]
-family = "JetBrainsMono Nerd Font"
+family = "BlexMono Nerd Font Mono"
 style = "Regular"
 
 [window]
@@ -62,4 +62,5 @@ y = 250
 bindings = [
   { key = "Right", mods = "Alt", chars = "\u001BF" },
   { key = "Left",  mods = "Alt", chars = "\u001BB" },
+  { key = "Return",  mods = "Shift", chars = "\u001B\r" },
 ]
